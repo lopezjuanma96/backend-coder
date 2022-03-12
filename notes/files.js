@@ -60,6 +60,21 @@ fs.promises.readFile('./texto.txt', 'utf-8')
     .then((res) => console.log('leído:', res))
     .catch((err) => console.log(err))
 
+//si queremos usar promesas y esperar que algunos de los procesos sean sincronicos,
+//no podemos usar el then y catch, porque deja de ser asincronica la creacion de la promesa y tirar error
+// tenemos que hacerlo con try catch
+
+async function leer() {
+    try {
+        const contenido = await fs.promises.readFile('./texto.txt', 'utf-8'); //no podemos usar then y catch acá
+        console.log(contenido)
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+leer();
+
 //OTRAS FUNCIONES: la mayoría tienen su version sincronica y asincronica
 
 //crear directorio: fs.mkdir
