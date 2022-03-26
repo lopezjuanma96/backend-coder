@@ -1,0 +1,22 @@
+{
+  "name": "backend-coder",
+  "version": "1.0.0",
+  "description": "Repo for publishing updates and works of Coderhouse Backend Course",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lopezjuanma96/backend-coder.git"
+  },
+  "author": "Juanma López",
+  "license": "ISC",
+  "dependencies": {
+    "moment": "~2.29.1"
+  },
+  "bugs": {
+    "url": "https://github.com/lopezjuanma96/backend-coder/issues"
+  },
+  "homepage": "https://github.com/lopezjuanma96/backend-coder#readme"
+}
