@@ -67,5 +67,7 @@ Adicionalmente se pueden crear combinaciones con los criterios anteriores.
 Por ejemplo:  1.0.0 || >=1.1.0 <1.2.0 usará la versión 1.0.0 (si la encuentra) o alguna a partir de 1.1.0, 
 pero anteriores a 1.2.0
 
-
+PAQUETES INTERESANTES A USAR:
+moment: trabaja con fechas
+nodemon: suele instalarse de manera global, si se ejecuta los scripts con nodemon script.js, se ejecuta cada vez que hay un cambio
 */
