@@ -31,36 +31,3 @@ y luego entro a localhost:8080 en el navegador
 
 BUSCAR APLICACION POSTMAN PARA EVALAR SERVIDORES
 */
-
-/*
-express: Framework que facilita la creacion de servidores, otro conocido es NextJS
-
-const app = express() define la app que va a trabajar los metodos, se puede trabajar 
-de manera más directa como const app = require('express')
-
-const server = app.listen(PORT, callback) -> similar al listen de http pero no hace falta crear el server
-
-server.on('event', callback(depending_on_event)) -> similar a http
-
-app.get('subpath', callback(req, res)) -> permite definir el comportamiento del servidor ante un determinado
-"subdirectorio" (o query) del servidor similarmente a createServer de http, 
-por ejemplo si subpath es / es la respuesta para localhost:PORT
-(aunque todavia no lo vimos, esta creando la respuesta a un GET)
-
-ver que funciones tiene req y res, hasta ahora conozco send y end
-
-/////EJEMPLO HASTA ACÁ/////////
-const express = require('express')
-const app = express()
-
-const PORT = 8080
-const server = app.listen(PORT, () => {console.log(`servidor conectado al puerto ${PORT}`)})
-app.on('error', (err) => {console.log(`no pudo cargarse el servidor porque ${err}`)}) //app.on permite dar distintas respuestas ante distintos eventos
-
-app.get('/', (req, res) => {
-    //res.send("con send puedo mandar un string")
-    res.send({message: "con send puedo mandar un objeto que se formatea a JSON"})
-    //res.end("este es mi end");
-})
-///////////////////////////////
-*/
