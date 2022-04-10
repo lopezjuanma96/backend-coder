@@ -32,6 +32,17 @@ module.exports = class Contenedor {
         }
     }
 
+    async change(id, val){
+        try{
+            const contentString = await fs.promises.readFile(this.filePath, 'utf-8');
+            const content = JSON.parse(contentString);
+            content[content.findIndex((e) => e.id === id)] = {...val, id:id};
+            await fs.promises.writeFile(this.filePath, JSON.stringify(content));
+        } catch (error) {
+            throw new Error(`Error al intentar crear el nuevo valor:\n${error}`);
+        }
+    }
+
     getAll(){
         try{
             return JSON.parse(fs.readFileSync(this.filePath, 'utf-8'));
@@ -70,5 +81,4 @@ module.exports = class Contenedor {
         }
         
     }
-
 }

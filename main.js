@@ -21,21 +21,31 @@ const server = app.listen(PORT, () => {console.log(`Servidor abierto en puerto $
 app.on('error', (err) => {console.log(`Error en la carga del servidor:\n${err}`)})
 app.use(express.static(__dirname + '/public'))
 
-router.get('/productos', (req, res) => {
+const mwSearchId = (req, res, next) => {
     if(Object.entries(req.query).length > 0){
         const searchId = parseFloat(req.query.id);
-        try{
-            if(isNaN(searchId)){
-                console.log(searchId)
-                res.status(400).send("Invalid Product ID")
-            } else {
-                res.send(cont.getById(searchId));
-            }
-        } catch (err) {
-            res.status(500).send(err)
+        if(isNaN(searchId)){
+            res.status(400).send({error: "Invalid Product ID"});
+        } else {
+            res.locals.id = searchId;
+            next();
         }
     } else {
+        res.locals.id = NaN;
+        next();
+    }
+}
+
+router.get('/productos', mwSearchId, (req, res) => {
+    id = res.locals.id;
+    if(isNaN(id)){
         res.send(cont.getAll());
+    } else {
+        try{
+            res.send(cont.getById(id));
+        } catch (err) {
+            res.status(500).send({error: "El producto no existe"})
+        }
     }
 })
 
@@ -55,45 +65,38 @@ router.post('/productos', (req, res) => {
     }
 })
 
-router.put('productos', (req, res) => {
-    if(Object.entries(req.query).length > 0){
-        const searchId = parseFloat(req.query.id);
-        try{
-            if(isNaN(searchId)){
-                console.log(searchId)
-                res.status(400).send("Invalid Product ID")
-            } else {
-                const temp = cont.getById(searchId);
-                const newProd = {...req.body, price : parseFloat(req.body.price)};
-                cont.deleteById(searchId);
-                cont.save(newProd);
-                res.send(temp);
-            }
-        } catch (err) {
-            res.status(500).send(err)
-        }
+router.put('/productos', mwSearchId, (req, res) => {
+    id = res.locals.id;
+    const body = req.body;
+    const parsePrice = parseFloat(body.price);
+    if(isNaN(id)){
+        res.status(400).send({error: "Invalid Product ID"});
+    } else if (isNaN(parsePrice)){
+        res.status(400).send("Invalid Price Input");
     } else {
-        res.send(cont.getAll());
+        try{
+            cont.getById(id); //to raise error if it doesn't exist
+            const newProd = {...body, price: parsePrice};
+            cont.change(id, newProd);
+            res.status(200).send(newProd);
+        } catch (err) {
+            res.status(500).send({error: "El producto no existe"})
+        }
     }
 })
 
-router.delete('productos', (req, res) => {
-    if(Object.entries(req.query).length > 0){
-        const searchId = parseFloat(req.query.id);
-        try{
-            if(isNaN(searchId)){
-                console.log(searchId)
-                res.status(400).send("Invalid Product ID")
-            } else {
-                const temp = cont.getById(searchId);
-                cont.deleteById(searchId);
-                res.send(temp);
-            }
-        } catch (err) {
-            res.status(500).send(err)
-        }
+router.delete('/productos', mwSearchId, (req, res) => {
+    id = res.locals.id;
+    if(isNaN(id)){
+        res.status(400).send({error: "Invalid Product ID"});
     } else {
-        res.send(cont.getAll());
+        try{
+            const temp = cont.getById(id);
+            cont.deleteById(id);
+            res.status(200).send(temp);
+        } catch (err) {
+            res.status(500).send({error: "El producto no existe"})
+        }
     }
 })
 
