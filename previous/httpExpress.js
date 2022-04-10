@@ -15,7 +15,11 @@ app.get('/visitas', (req, res) => {
     visitCount++;
     if(Object.entries(req.query).length > 0){
         if(req.query.div){
-            visitCount/=parseFloat(req.query.div);
+            if(isNaN(parseFloat(req.query.div))){
+                res.status(404).send({ error : "El valor ingresado en div no es numérico"});
+            } else {
+                visitCount/=parseFloat(req.query.div);
+            }
         }
     }
     res.send(`La cantidad de visitas es ${visitCount}`)

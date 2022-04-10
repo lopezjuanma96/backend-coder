@@ -113,4 +113,60 @@ app.get("/URI/:ident", (req, res) => {
     }
 })
 
+OPERACION POST
+
+debemos configurar el código para que procese los datos entrantes como JSON
+para eso, al principio del script, debajo de la definicion de app, agregamos:
+
+...
+const app = express()
+...
+app.use(express.json())
+app.use(express.urlencoded({extended: true}))
+...
+//VER BIEN ESTO DESPUES
+
+para acceder al cuerpo del objeto enviado en post usamos el parámetro body de request
+
+app.post('URL', (req, res) => {
+    const message = req.body;
+    ... //aca creariamos un nuevo objeto a partir de los datos enviados en el body
+    //res.send(message)
+    //res.send({body: message})  //VER DIFERENCIA ENTRE ESTOS
+    //res.json({body: message})
+})
+
+OPERACION PUT
+
+muy similar al post, pero le agregamos un parametro o un query que identifique el id del objeto
+a actualizar
+
+app.post('URL/:id', (req, res) => {
+    const message = req.body;
+    ... //aca usariamos el id para buscar el objeto y actualizarlo
+    //res.json({id: req.params.id, body: message})
+})
+
+OPERACION DELETE
+
+similar al get, usamos un parametro o un query para identificar el objeto a borrar
+
+app.delete('URL', (req, res) => {
+    const toDelete = req.query.id
+    ... //aca buscariamo el objeto con ese id y lo eliminaríamos
+    res.json({id: toDelete})
+})
+
+CODIGOS DE ERROR
+
+para implementar los códigos de error se usa el método status de el parametro response del callback de 
+cada operación. este método retorna el mismo objeto por lo que se puede concatenar con otros metodos del
+response como send. ej:
+
+...
+app.get('URI', (req, res) => {
+    res.status(101).send({error: "el valor ingresado es incorrecto"})
+})
+...
+
 */
