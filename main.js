@@ -1,6 +1,5 @@
 const Contenedor = require('./contenedorClass.js');
 const express = require('express');
-const handlebars = require('express-handlebars')
 const { Router } = express;
 
 const app = express();
@@ -18,7 +17,7 @@ const getRandom = () => {
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 
-app.set('view engine', 'pug');
+app.set('view engine', 'ejs');
 app.set('views', __dirname + '/views');
 
 const server = app.listen(PORT, () => {console.log(`Servidor abierto en puerto ${PORT}`)})
@@ -40,14 +39,14 @@ const mwSearchId = (req, res, next) => {
     }
 }
 
-router.get('/', (req, res) => {
+router.get('/form', (req, res) => {
     res.send('<!doctypehtml><html lang=es><meta charset=UTF-8><meta content="width=device-width,initial-scale=1"name=viewport><title>Formulario de Ingreso de Productos</title><h2>Ingrese Producto</h2><form action=/api/productos method=POST>Nombre: <input name=title> Precio: <input name=price> Foto URL: <input name=thumbnail> <button>Enviar</button></form>')
 })
 
 router.get('/productos', mwSearchId, (req, res) => {
     id = res.locals.id;
     if(isNaN(id)){
-        res.render('index.pug', {data:cont.getAll()})
+        res.render('pages/index', {data:cont.getAll()})
     } else {
         try{
             res.send(cont.getById(id));

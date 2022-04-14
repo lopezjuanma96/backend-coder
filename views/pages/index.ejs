@@ -1,0 +1,18 @@
+<html>
+    <header>
+        <title>Productos</title>
+    </header>
+    <body>
+        <h2>Productos</h2>
+        <ul>
+            <% for (val of data) { %>
+                <li>
+                    <b>Nombre:</b><%=val.title%><br>
+                    <b>Precio:</b><%=val.price%><br>
+                    <b>Imagen:</b><%=val.thumbnail%><br>
+                </li>
+            <% } %>
+        </ul>
+        <a href="../"><button>Volver</button></a>
+    </body>
+</html>
