@@ -18,16 +18,7 @@ const getRandom = () => {
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 
-app.engine(
-    'hbs',
-    handlebars({
-        extname: '.hbs',
-        defaultLayout: 'index.hbs',
-        layoutsDir: __dirname + '/views/layouts',
-        partialsDir: __dirname + '/views/partials'
-    })
-)
-app.set('view engine', 'hbs');
+app.set('view engine', 'pug');
 app.set('views', __dirname + '/views');
 
 const server = app.listen(PORT, () => {console.log(`Servidor abierto en puerto ${PORT}`)})
@@ -56,7 +47,7 @@ router.get('/', (req, res) => {
 router.get('/productos', mwSearchId, (req, res) => {
     id = res.locals.id;
     if(isNaN(id)){
-        res.render('main', {data:cont.getAll()})
+        res.render('index.pug', {data:cont.getAll()})
     } else {
         try{
             res.send(cont.getById(id));

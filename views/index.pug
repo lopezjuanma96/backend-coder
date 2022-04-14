@@ -1,0 +1,11 @@
+html
+    header
+        title="Productos"
+    body 
+        h2="Productos"
+        ul
+            each val in data
+                li
+                    p="Nombre:"+val.title
+                    p="Precio:"+val.price
+                    p="Imagen:"+val.thumbnail
