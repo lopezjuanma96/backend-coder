@@ -6,9 +6,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CoderHouse</title>
     <script src="/socket.io/socket.io.js"></script>
-    <script src="/index.js"></script> <!--No deberia hacer falta aclarar que index.js esta en public por el use static del server.js-->
 </head>
 <body>
     <h2>Ejemplo de Websockets de CoderHouse</h2>
+    <div class="inputBlock" style="display:flex;flex-direction:row">
+        <input type="text" id="inputSpace">
+        <button id="inputSendButton">Enviar</button>    
+    </div>
+    <div id="receivedText"></div>
+    <script src="/index.js"></script> <!--No deberia hacer falta aclarar que index.js esta en public por el use static del server.js-->
 </body>
 </html>

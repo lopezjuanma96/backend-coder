@@ -2,7 +2,19 @@
 
 const socket = io(); //conexion con websockets, la variable io la saca del script server.js, no se bien como
 
-socket.on('message', (data) => { //'message es el nombre de la variable que defini en el servidor
-    alert(data);
-    socket.emit('messageResp', 'Este es un mensaje enviado desde el cliente por sockets'); //nuevamente cuidado con el nombre de la variable para recibirla bien desde el servidor
+const sendButton = document.querySelector('#inputSendButton');
+const sendSpace = document.querySelector("#inputSpace");
+const receivedText = document.querySelector("#receivedText");
+
+sendButton.addEventListener('click', () => {
+    //console.log("enviando", sendSpace.value);
+    socket.emit("message", sendSpace.value);
+    sendSpace.value.set("");
 })
+
+socket.on("messages", (data) => {
+    var text = ""
+    data.forEach((m) => {text += (`<p>SocketID:${m.id}->Mensaje:${m.data}</p>`)});
+    receivedText.innerHTML = text;
+})
+
