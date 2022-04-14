@@ -1,0 +1,13 @@
+<ul>
+    <% 
+    if(data.length > 0){ 
+    for (val of data) { %>
+        <li>
+            <b>Nombre:</b><%=val.title%><br>
+            <b>Precio:</b><%=val.price%><br>
+            <b>Imagen:</b><%=val.thumbnail%><br>
+        </li>
+    <% }} else { %>
+        <p>No hay productos :(</p>
+    <% } %>
+</ul>
