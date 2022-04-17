@@ -1,0 +1,90 @@
+.mainTitle{
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+button:hover{
+    cursor:pointer;
+}
+
+.gotoProductsButton{
+    background-color: green;
+    color:white;
+    border-radius: 7%;
+    padding: 0.5% 1%;
+    border-width: 0px;
+}
+
+.gotoChatButton{
+    background-color: #270b9f;
+    color:white;
+    border-radius: 7%;
+    padding: 0.5% 1%;
+    border-width: 0px;
+}
+
+.goBackButton{
+    background-color: #9f0b0b;
+    color:white;
+    border-radius: 7%;
+    padding: 0.5% 2%;
+    border-width: 0px;
+}
+
+.postProductButton{
+    background-color: #0b9f1a;
+    color:white;
+    border-radius: 7%;
+    padding: 0.5% 1%;
+    border-width: 0px;
+    width: 15%;
+    align-self: center;
+}
+
+.chatInputButton{
+    background-color: #9f440b;
+    color:white;
+    border-radius: 7%;
+    padding: 0.5% 1%;
+    border-width: 0px;
+    width: 15%;
+    align-self: center;
+}
+
+.productsTable{
+    font-family: Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.productsTable td, .productsTable th {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+  
+.productsTable tr:nth-child(even){background-color: #f2f2f2;}
+  
+.productsTable tr:hover {background-color: #ddd;}
+  
+.productsTable th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+    background-color: #4175a6;
+    color: white;
+}
+
+.noProductsBlock{
+    display:flex;
+    justify-content: center;
+}
+
+.productsForm{
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
+    row-gap: 10px;
+}
+
+.chatInput{
+    width:100%;
+}

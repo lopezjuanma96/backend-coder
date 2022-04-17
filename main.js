@@ -1,6 +1,7 @@
 const Contenedor = require('./contenedorClass.js');
 const express = require('express');
 const { Router } = express;
+const handlebars = require('express-handlebars');
 
 const app = express();
 const router = new Router();
@@ -17,7 +18,13 @@ const getRandom = () => {
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 
-app.set('view engine', 'ejs');
+app.engine('hbs', handlebars({
+    extname: '.hbs',
+    defaultLayout: 'index.hbs',
+    layoutsDir: __dirname + '/views/layouts',
+    partialsDir: __dirname + '/views/partials'
+}))
+app.set('view engine', 'hbs');
 app.set('views', __dirname + '/views');
 
 const server = app.listen(PORT, () => {console.log(`Servidor abierto en puerto ${PORT}`)})
@@ -39,14 +46,12 @@ const mwSearchId = (req, res, next) => {
     }
 }
 
-router.get('/form', (req, res) => {
-    res.send('<!doctypehtml><html lang=es><meta charset=UTF-8><meta content="width=device-width,initial-scale=1"name=viewport><title>Formulario de Ingreso de Productos</title><h2>Ingrese Producto</h2><form action=/api/productos method=POST>Nombre: <input name=title> Precio: <input name=price> Foto URL: <input name=thumbnail> <button>Enviar</button></form>')
-})
-
 router.get('/productos', mwSearchId, (req, res) => {
     id = res.locals.id;
     if(isNaN(id)){
-        res.render('pages/index', {data:cont.getAll()})
+        const allProducts = cont.getAll();
+        console.log(allProducts?allProducts.length>0:false)
+        res.render('main', {data:allProducts, dataExist:allProducts?allProducts.length>0:false})
     } else {
         try{
             res.send(cont.getById(id));
@@ -58,6 +63,10 @@ router.get('/productos', mwSearchId, (req, res) => {
 
 router.get('/productoRandom', (req, res) => {
     res.send(getRandom());
+})
+
+router.get('/chat', (req, res) => {
+    res.render('chat');
 })
 
 router.post('/productos', (req, res) => {
