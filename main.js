@@ -50,7 +50,6 @@ router.get('/productos', mwSearchId, (req, res) => {
     id = res.locals.id;
     if(isNaN(id)){
         const allProducts = cont.getAll();
-        console.log(allProducts?allProducts.length>0:false)
         res.render('main', {data:allProducts, dataExist:allProducts?allProducts.length>0:false})
     } else {
         try{
