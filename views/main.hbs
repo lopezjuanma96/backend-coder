@@ -1,7 +1,22 @@
-<h2>Productos</h2>
-<ul>
-    {{#each data}}
-    <li><b>Nombre:</b> {{this.title}} <br> <b>Precio:</b>{{this.price}} <br> <b>Imagen:</b>{{this.thumbnail}}<br></li>
-    {{/each}}
-    <a href="../"><button>Volver</button></a>
-</ul>
+<h1 class="mainTitle">Productos</h1>
+{{>form}}
+<br>
+<h2 class="mainTitle">Lista de productos</h2>
+{{#if dataExist}}
+    <table class="productsTable">
+        <tr>
+            <th>Nombre</th>
+            <th>Precio</th>
+            <th>Imagen</th>
+        </tr>
+            {{#each data}}
+            <tr><td>{{this.title}}</td><td>{{this.price}}</td><td>{{this.thumbnail}}</td></tr>
+            {{/each}}
+    </table>
+{{else}}
+    <div class="noProductsBlock">
+        <h2 class="mainTitle"> No hay productos</h2>
+    </div>
+{{/if}}
+<br>
+<a href="/"><button class="goBackButton">Volver</button></a>
