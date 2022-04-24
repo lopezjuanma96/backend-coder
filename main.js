@@ -4,7 +4,7 @@
 const Contenedor = require('./contenedorClass.js');
 const express = require('express');
 const { Router } = express;
-const handlebars = require('express-handlebars');
+const { engine } = require('express-handlebars');
 const { Server: IOServer } = require("socket.io");
 const { Server: HttpServer } = require("http");
 const { readFileSync } = require('fs');
@@ -22,7 +22,7 @@ const PORT = 8080;
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 
-app.engine('hbs', handlebars({
+app.engine('hbs', engine({
     extname: '.hbs',
     defaultLayout: 'index.hbs',
     layoutsDir: __dirname + '/views/layouts',
