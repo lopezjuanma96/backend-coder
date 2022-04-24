@@ -215,6 +215,14 @@ app.get('/api/chat', (req, res) => {
     res.render('chat');
 })
 
+//////////////////////////////////////
+////// GLOBAL MIDDLEWARES
+//////////////////////////////////////
+
+app.use((req, res, next) => {
+    res.status(404).send(JSON.stringify({ error : -2, descripcion: `ruta ${req.url} metodo ${req.method} no implementada`}))
+})
+
 ///////////////////////////////////
 ////// WEBSOCKET
 ///////////////////////////////////
