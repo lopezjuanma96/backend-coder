@@ -24,9 +24,10 @@ module.exports = class Contenedor {
             const contentString = await fs.promises.readFile(this.filePath, 'utf-8');
             const content = JSON.parse(contentString);
             const newId = this._getNewId(content.map((elem) => elem.id));
-            content.push({...val, id:newId});
+            content.push({...val, id:newId, timestamp: Date.now()});
             await fs.promises.writeFile(this.filePath, JSON.stringify(content));
-            console.log("Nuevo valor creado");
+            console.log("Nuevo valor creado", newId);
+            return newId;
         } catch (error) {
             throw new Error(`Error al intentar crear el nuevo valor:\n${error}`);
         }

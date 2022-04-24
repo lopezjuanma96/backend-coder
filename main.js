@@ -15,8 +15,10 @@ const { readFileSync } = require('fs');
 const app = express();
 const http = new HttpServer(app);
 const io = new IOServer(http);
-const router = new Router();
-const cont = new Contenedor('productosCont.json');
+const routerProd = new Router();
+const routerCart = new Router();
+const prod = new Contenedor('productosCont.json');
+const cart = new Contenedor('carritoCont.json');
 const PORT = 8080;
 
 app.use(express.json())
@@ -71,40 +73,36 @@ const checkUser = (req, res, next) => {
 }
 
 //////////////////////////////////////
-////// REQUESTS
+////// PRODUCT REQUESTS
 //////////////////////////////////////
-router.get('/productos', mwSearchId, (req, res) => {
+routerProd.get('/productos', mwSearchId, (req, res) => {
     id = res.locals.id;
     if(isNaN(id)){
-        const allProducts = cont.getAll();
+        const allProducts = prod.getAll();
         res.render('main', {data:allProducts, dataExist:allProducts?allProducts.length>0:false})
     } else {
         try{
-            res.send(cont.getById(id));
+            res.send(prod.getById(id));
         } catch (err) {
             res.status(500).send({error: "El producto no existe"})
         }
     }
 })
 
-router.get('/chat', (req, res) => {
-    res.render('chat');
-})
-
-router.post('/productos', (req, res) => {
+routerProd.post('/productos', (req, res) => {
     const body = req.body;
     const parsePrice = parseFloat(body.price);
     if(isNaN(parsePrice)){
         res.status(400).send("Invalid Price Input");
     } else {
         const newProd = {...body, price: parsePrice};
-        cont.save(newProd);
+        prod.save(newProd);
         //res.status(200).send(newProd);
         res.redirect('/')
     }
 })
 
-router.put('/productos', mwSearchId, (req, res) => {
+routerProd.put('/productos', mwSearchId, (req, res) => {
     id = res.locals.id;
     const body = req.body;
     const parsePrice = parseFloat(body.price);
@@ -114,9 +112,9 @@ router.put('/productos', mwSearchId, (req, res) => {
         res.status(400).send("Invalid Price Input");
     } else {
         try{
-            cont.getById(id); //to raise error if it doesn't exist
+            prod.getById(id); //to raise error if it doesn't exist
             const newProd = {...body, price: parsePrice};
-            cont.change(id, newProd);
+            prod.change(id, newProd);
             res.status(200).send(newProd);
         } catch (err) {
             res.status(500).send({error: "El producto no existe"})
@@ -124,14 +122,14 @@ router.put('/productos', mwSearchId, (req, res) => {
     }
 })
 
-router.delete('/productos', mwSearchId, (req, res) => {
+routerProd.delete('/productos', mwSearchId, (req, res) => {
     id = res.locals.id;
     if(isNaN(id)){
         res.status(400).send({error: "Invalid Product ID"});
     } else {
         try{
-            const temp = cont.getById(id);
-            cont.deleteById(id);
+            const temp = prod.getById(id);
+            prod.deleteById(id);
             res.status(200).send(temp);
         } catch (err) {
             res.status(500).send({error: "El producto no existe"})
@@ -139,7 +137,83 @@ router.delete('/productos', mwSearchId, (req, res) => {
     }
 })
 
-app.use('/api', router)
+app.use('/api/productos', routerProd);
+
+//////////////////////////////////////
+////// CART REQUESTS
+//////////////////////////////////////
+
+routerCart.post('/', (req, res) => {
+    const newId = cart.save({productos: []});  //i dont know why this is returning a promise.
+    res.status(200).send(JSON.stringify({id: newId}));
+})
+
+routerCart.delete('/:id', (req, res) => {
+    const thisCartId = parseFloat(req.params.id);
+    try{
+        const deletedItem = cart.getById(thisCartId);
+        cart.deleteById(thisCartId);
+        res.status(200).send(JSON.stringify({deletedItem}));
+    } catch (e) {
+        res.status(500).send(JSON.stringify({error: "ID carrito inexistente"}));
+    }
+})
+
+routerCart.get('/:id/productos', (req, res) => {
+    const thisCartId = parseFloat(req.params.id);
+    const thisCart = cart.getById(thisCartId);
+    res.status(200).send(JSON.stringify(thisCart.productos));
+})
+
+routerCart.post('/:id/productos/:id_prod', (req, res) => {
+    const thisCartId = parseFloat(req.params.id);
+    const thisProdId = parseFloat(req.params.id_prod);
+    try{
+        const thisCart = cart.getById(thisCartId);
+        try {
+            const thisProd = prod.getById(thisProdId);
+            thisCart.productos.push(thisProd);
+            cart.change(thisCartId, thisCart);
+            res.status(200).send(JSON.stringify(thisCart));
+        } catch (e) {
+            res.status(500).send(JSON.stringify({error: "ID producto inexistente"}));
+        }
+    } catch (e) {
+        res.status(500).send(JSON.stringify({error: "ID carrito inexistente"}));
+    }
+})
+
+routerCart.delete('/:id/productos/:id_prod', (req, res) => {
+    const thisCartId = parseFloat(req.params.id);
+    const thisProdId = parseFloat(req.params.id_prod);
+    try{
+        const thisCart = cart.getById(thisCartId);
+        try {
+            const thisProd = prod.getById(thisProdId);
+            if (thisCart.productos.find((e) => e.id === thisProdId)){
+                thisCart.productos = thisCart.productos.filter((e) => e.id !== thisProdId);
+                cart.change(thisCartId, thisCart);
+                res.status(200).send(JSON.stringify(thisCart));
+            } else {
+                res.status(200).send("There's no product of that ID in the requested Cart\n" + JSON.stringify(thisCart))
+            }
+        } catch (e) {
+            res.status(500).send(JSON.stringify({error: "ID producto inexistente"}));
+        }
+    } catch (e) {
+        res.status(500).send(JSON.stringify({error: "ID carrito inexistente"}));
+    }
+})
+
+app.use('/api/carrito', routerCart);
+
+//////////////////////////////////////
+////// CHAT REQUESTS
+//////////////////////////////////////
+
+app.get('/api/chat', (req, res) => {
+    res.render('chat');
+})
 
 ///////////////////////////////////
 ////// WEBSOCKET
@@ -160,7 +234,7 @@ io.on('connection', (socket) => {
             res.status(400).send("Invalid Price Input");
         } else {
             const newProd = {...data, price: parsePrice};
-            cont.save(newProd);
+            prod.save(newProd);
             io.sockets.emit('updateProducts', true);
         }
     })
