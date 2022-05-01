@@ -2,6 +2,7 @@ const socket = io();
 
 postProductButton = document.querySelector(".postProductButton");
 productForm = document.querySelector(".productsForm");
+productsTable = document.querySelector(".productsTable");
 
 chatInputButton = document.querySelector(".chatInputButton");
 chatInput = document.querySelector(".chatInput");
@@ -25,6 +26,10 @@ if(postProductButton){
         //sendObject["date"] = new Date();
         console.log(sendObject);
         socket.emit("productAdd", sendObject);
+        const newRow = document.createElement("tr");
+        newRow.innerHTML = `<td>${sendObject['title']}</td><td>${sendObject['price']}</td><td>${sendObject['thumbnail']}</td>`;
+        newRow.style.backgroundColor="sandybrown";
+        productsTable.append(newRow);
     })
 }
 

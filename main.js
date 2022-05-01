@@ -1,6 +1,8 @@
 /////////////////////////
 //// IMPORTS
 /////////////////////////
+const ContenedorProd = require('./contenedorProductosKnexClass.js');
+const ContenedorChat = require('./contenedorChatKnexClass.js')
 const Contenedor = require('./contenedorClass.js');
 const express = require('express');
 const { Router } = express;
@@ -17,8 +19,9 @@ const http = new HttpServer(app);
 const io = new IOServer(http);
 const routerProd = new Router();
 const routerCart = new Router();
-const prod = new Contenedor('productosCont.json');
-const cart = new Contenedor('carritoCont.json');
+const prod = new ContenedorProd();
+const messages = new ContenedorChat();
+const cart = new Contenedor('./carritoCont.json');
 const PORT = 8080;
 
 app.use(express.json())
@@ -78,11 +81,14 @@ const checkUser = (req, res, next) => {
 routerProd.get('/productos', mwSearchId, (req, res) => {
     id = res.locals.id;
     if(isNaN(id)){
-        const allProducts = prod.getAll();
-        res.render('main', {data:allProducts, dataExist:allProducts?allProducts.length>0:false})
+        prod.getAll()
+        .then((allProducts) => res.render('main', {data:allProducts, dataExist:allProducts?allProducts.length>0:false}))
+        .catch((e) => console.log(e));
     } else {
         try{
-            res.send(prod.getById(id));
+            prod.getById(id)
+            .then((prod) => res.send(prod))
+            .catch((e) => console.log(e));
         } catch (err) {
             res.status(500).send({error: "El producto no existe"})
         }
@@ -96,9 +102,10 @@ routerProd.post('/productos', (req, res) => {
         res.status(400).send("Invalid Price Input");
     } else {
         const newProd = {...body, price: parsePrice};
-        prod.save(newProd);
-        //res.status(200).send(newProd);
-        res.redirect('/')
+        prod.save(newProd)
+        .then(() => res.redirect('/'))
+        .catch((e) => console.log(e))
+        .finally(prod.close());
     }
 })
 
@@ -112,10 +119,11 @@ routerProd.put('/productos', mwSearchId, (req, res) => {
         res.status(400).send("Invalid Price Input");
     } else {
         try{
-            prod.getById(id); //to raise error if it doesn't exist
             const newProd = {...body, price: parsePrice};
-            prod.change(id, newProd);
-            res.status(200).send(newProd);
+            prod.change(id, newProd)
+            .then(() => res.status(200).send(newProd))
+            .catch((e) => {throw e})
+            .finally(prod.close());
         } catch (err) {
             res.status(500).send({error: "El producto no existe"})
         }
@@ -128,9 +136,12 @@ routerProd.delete('/productos', mwSearchId, (req, res) => {
         res.status(400).send({error: "Invalid Product ID"});
     } else {
         try{
-            const temp = prod.getById(id);
-            prod.deleteById(id);
-            res.status(200).send(temp);
+            prod.getById(id)
+            .then(res.status(200).send(temp))
+            .catch((e) => {throw e});
+            prod.deleteById(id)
+            .catch((e) => {throw e})
+            .finally(prod.close());
         } catch (err) {
             res.status(500).send({error: "El producto no existe"})
         }
@@ -226,24 +237,33 @@ app.use((req, res, next) => {
 ///////////////////////////////////
 ////// WEBSOCKET
 ///////////////////////////////////
-messageList = []
 
 io.on('connection', (socket) => {
     console.log('usuario connectado');
-    socket.emit('messageList', messageList);
+    messages.getAll()
+    .then((messageList) => socket.emit('messageList', messageList))
+    .catch((e) => console.log(e));
     //socket.emit('message', 'Este es un mensaje emitido por el socket del servidor'); //CUIDADO, es importante nombrar bien la variable (en este caso 'message') porque si no respeto el nombre del lado del cliente no va a andar
     socket.on('chatMessage', (data) => {
-        messageList.push({id: socket.id, ...data});
-        io.sockets.emit('messageList', messageList); //broadcast envío a todos los clientes conectados: io.sockets.emmit(..)
+        messages.save({socket: socket.id, ...data})
+        .then(() => {
+            messages.getAll()
+            .then((messageList) => io.sockets.emit('messageList', messageList))
+            .catch((e) => console.log(e));
+        })
+        .catch((e) => console.log(e)); //broadcast envío a todos los clientes conectados: io.sockets.emmit(..)
     });
     socket.on('productAdd', (data) => {
         const parsePrice = parseFloat(data.price);
         if(isNaN(parsePrice)){
-            res.status(400).send("Invalid Price Input");
+            throw Error("Invalid Price Input");
         } else {
             const newProd = {...data, price: parsePrice};
-            prod.save(newProd);
-            io.sockets.emit('updateProducts', true);
+            prod.save(newProd)
+            .catch((e) => console.log(e))
+            .finally(() => {
+                io.sockets.emit('updateProducts', true)
+            });
         }
     })
 })
