@@ -2,6 +2,7 @@
 //// IMPORTS
 /////////////////////////
 const ContenedorProd = require('./contenedorProductosKnexClass.js');
+const ContenedorChat = require('./contenedorChatKnexClass.js')
 const Contenedor = require('./contenedorClass.js');
 const express = require('express');
 const { Router } = express;
@@ -19,6 +20,7 @@ const io = new IOServer(http);
 const routerProd = new Router();
 const routerCart = new Router();
 const prod = new ContenedorProd();
+const messages = new ContenedorChat();
 const cart = new Contenedor('./carritoCont.json');
 const PORT = 8080;
 
@@ -235,15 +237,21 @@ app.use((req, res, next) => {
 ///////////////////////////////////
 ////// WEBSOCKET
 ///////////////////////////////////
-messageList = []
 
 io.on('connection', (socket) => {
     console.log('usuario connectado');
-    socket.emit('messageList', messageList);
+    messages.getAll()
+    .then((messageList) => socket.emit('messageList', messageList))
+    .catch((e) => console.log(e));
     //socket.emit('message', 'Este es un mensaje emitido por el socket del servidor'); //CUIDADO, es importante nombrar bien la variable (en este caso 'message') porque si no respeto el nombre del lado del cliente no va a andar
     socket.on('chatMessage', (data) => {
-        messageList.push({id: socket.id, ...data});
-        io.sockets.emit('messageList', messageList); //broadcast envío a todos los clientes conectados: io.sockets.emmit(..)
+        messages.save({socket: socket.id, ...data})
+        .then(() => {
+            messages.getAll()
+            .then((messageList) => io.sockets.emit('messageList', messageList))
+            .catch((e) => console.log(e));
+        })
+        .catch((e) => console.log(e)); //broadcast envío a todos los clientes conectados: io.sockets.emmit(..)
     });
     socket.on('productAdd', (data) => {
         const parsePrice = parseFloat(data.price);

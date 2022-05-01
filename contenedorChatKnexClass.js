@@ -1,5 +1,5 @@
 const knexLib = require('knex');
-const options = require('./settings/mariaOptions.js')
+const options = require('./settings/sqLiteOptions.js')
 
 module.exports = class Contenedor {
 
@@ -8,16 +8,16 @@ module.exports = class Contenedor {
 
     constructor(){
         this.knex = knexLib(options);
-        this.knex.schema.hasTable("products")
+        this.knex.schema.hasTable("messages")
         .then((res) => {
             this.tableReady = res;
             if (!res){
-                this.knex.schema.createTable("products", (table) => {
+                this.knex.schema.createTable("messages", (table) => {
                     table.increments('id').primary();
-                    table.string('title', 50).notNullable();
-                    table.float('price');
-                    table.string('thumbnail', 255);
-                    table.float('timestamp');
+                    table.string('socket', 100).notNullable();
+                    table.string('user', 50).notNullable();
+                    table.string('msg', 255);
+                    table.string('date', 100);
                 })
                 .then(() => this.tableReady = true);
             }
@@ -26,38 +26,38 @@ module.exports = class Contenedor {
     
     save(val){
         if (this.tableReady){
-            const toAdd = {...val, timestamp:Date.now()};
-            return this.knex('products').insert([toAdd]);
+            const toAdd = {...val};
+            return this.knex('messages').insert([toAdd]);
         }
     }
 
     change(id, val){
         if (this.tableReady){
-            return this.knex.from('products').where('id', id).update(val);
+            return this.knex.from('messages').where('id', id).update(val);
         }
     }
 
     getAll(){
         if (this.tableReady){
-            return this.knex('products').select('*');
+            return this.knex('messages').select('*');
         }
     }
 
     getById(id){
         if (this.tableReady){
-            return this.knex('products').select('*').where('id', id);
+            return this.knex('messages').select('*').where('id', id);
         }
     }
 
     deleteAll(){
         if (this.tableReady){
-            return this.knex.schema.dropTable('products');
+            return this.knex.schema.dropTable('messages');
         }
     }
 
     deleteById(id){
         if (this.tableReady){
-            return this.knex.from('products').where('id', id).del();
+            return this.knex.from('messages').where('id', id).del();
         }
     }
 
