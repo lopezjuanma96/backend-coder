@@ -1,5 +1,5 @@
 const knexLib = require('knex');
-const {options} = require('settings/mariaOptions.js')
+const options = require('./settings/mariaOptions.js')
 
 module.exports = class Contenedor {
 
@@ -10,17 +10,16 @@ module.exports = class Contenedor {
         this.knex = knexLib(options);
         this.knex.schema.hasTable("products")
         .then((res) => {
-            if (res){
-                this.tableReady = true;
-            } else {
+            this.tableReady = res;
+            if (!res){
                 this.knex.schema.createTable("products", (table) => {
                     table.increments('id').primary();
                     table.string('title', 50).notNullable();
                     table.float('price');
                     table.string('thumbnail', 255);
-                    table.int('timestamp');
+                    table.float('timestamp');
                 })
-                .then(() => {this.tableReady = true})
+                .then(() => tableReady = true);
             }
         })
     }
@@ -28,7 +27,7 @@ module.exports = class Contenedor {
     save(val){
         if (this.tableReady){
             const toAdd = {...val, timestamp:Date.now()};
-            return this.knex('products').insert(toAdd);
+            return this.knex('products').insert([toAdd]);
         }
     }
 
