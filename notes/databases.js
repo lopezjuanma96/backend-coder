@@ -139,3 +139,13 @@ MongoDBCompass -> viene con la instalacion gratuita de MongoDB
 
 La mayoría de las cosas las trabajamos desde la consola propia de mongoDB pero me parece que es lo mismo que usar el paquete/librería de mongo en JS. (REVISAR)
 */
+
+/*
+
+MONGOOSE: https://mongoosejs.com/
+
+MongoDB Object managing for JS
+
+
+
+*/
