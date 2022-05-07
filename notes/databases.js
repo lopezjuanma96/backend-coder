@@ -146,6 +146,50 @@ MONGOOSE: https://mongoosejs.com/
 
 MongoDB Object managing for JS
 
+Se crea un modelo a partir de un esquema y un nombre (de base de datos), si esa base de datos no existe la crea:
+
+
+import mongoose from "mongoose";
+
+const userCollection = 'nombre_de_db'
+const userSchema = new mongoose.Schema({ //this object can be passed as props object form another
+    name: {type: String, required:true, max:100}, //max 100 chars
+    surname: {type: String, required:true, max:100}, //another important parameter is "unique" which blocks two regs with the same value on that key to be added
+    email: {type: String, required:true, max:100},
+    userName: {type: String, required:true, max:100},
+    password: {type: Number, required:true}
+})
+
+export const users = mongoose.model(userCollection, userSchema)
+
+Luego se usa el modelo para crear o eliminar datos, con comandos similares a los de mongo, el unico 
+un poco distinto es el create, ya que primero se crea el objeto a partir del esquema y luego se guarda en otro comando
+
+
+//Creation
+const newUser = {
+    name:"Juan",
+    surname:"López",
+    email:"jmlopesz@lopez.ccom",
+    userName:"zaga",
+    password:541235
+}
+
+const userSaveModel = new users(newUser);  //ACA se crea el objeto basado en el esuema
+let userSaved = await userSaveModel.save(); //ACA se guarda
+
+//Read
+console.log(await users.findOne({keys_to_search_at: values_to_find}));
+console.log(await users.findMany({keys_to_search_at: values_to_find}));
+
+//Update
+const userUpdate = await users.updateOne({keys_to_search_at: values_to_find}, {$set: {keys_to_search_at: values_to_update}}); //el $set es la accion, es la más comun de uptdate
+
+//Delete
+const userDelet = await users.deleteOne({keys_to_search_at: values_to_find});
+
+
+COMO SE VE TODAS LAS FUNCIONES SON ASINCRONAS ASI QUE SE TRABAJAN CON PROMESAS O AWAIT EN UNA ASYNC
 
 
 */
