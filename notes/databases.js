@@ -103,3 +103,39 @@ const knex = require("knex")({
 knexLib es un submodulo de knx que permite crear una clase que maneje las operaciones y que en nuestro codigo
 principal solo llamemos a los metodos de esa clase, y que quede el codigo más limpio y menos repetitivo
 */
+
+/*
+
+MongoDB : base de datos no relacional más utilizada
+
+Se puede trabajar de manera remota (accediendo a un servidor en cloud) o creando nuestro servidor local.
+En general se usa local para desarrollo y testing y luego se usa la nube para el uso real.
+Uso gratuito para personas, tiene version empresarial.
+
+Trabaja con colecciones y documentos: similar a JSON (como Firebase).
+TABLA SQL -> COLECCION noSQL
+FILA SQL -> DOCUMENTOS noSQL
+
+al usarlo local, se descarga y se instalan los archivos que proveen dos ejecutables:
+-- mongod.exe representa el servidor, sirve para crear los archivos necesarios que van a actuar como base de datos en una
+carpeta y generar el servidor al cual hacer las consultas
+-- mongo.exe representa el cliente con el que podemos hacer consultas a la base de datos
+
+ALGUNOS COMANDOS:
+mongod --dbpath path/to/db -> levanta el servidor de base de datos en la carpeta deeterminada, creando los archivos si es necesario (la primera vez)
+mongo -> genera el cliente para hacer las consultas (el servidor debe estar levantado)
+--dentro del cliente de mongo:
+----show dbs -> muestra las bases de datos que contengan datos
+----show collections -> muestra las collecciones dentro de la base de datos seleccionada
+----db -> muestra la base de datos seleccionada para trabajar
+----use __ -> permite seleccionar con que base de datos se trabajara, la crea si no existe
+----db.____ -> selecciona una cierta coleccion dentro de la base de datos actual
+----db.____.insert(__) -> inserta un nuevo documento en una coleccion de la base de datos actualmente seleccionada
+----db.____.find(__) -> busca algun documento en la coleccion, o lista todos los documentos si no se pasa parametro.
+
+Conexion por GUI a la base de datos:
+Robo 3T -> Más estilizada, pero al ser paga se usa menos, tiene periood de prueba
+MongoDBCompass -> viene con la instalacion gratuita de MongoDB
+
+La mayoría de las cosas las trabajamos desde la consola propia de mongoDB pero me parece que es lo mismo que usar el paquete/librería de mongo en JS. (REVISAR)
+*/
