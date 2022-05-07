@@ -184,9 +184,21 @@ console.log(await users.findMany({keys_to_search_at: values_to_find}));
 
 //Update
 const userUpdate = await users.updateOne({keys_to_search_at: values_to_find}, {$set: {keys_to_search_at: values_to_update}}); //el $set es la accion, es la más comun de uptdate
+const userUpdate = await users.updateMany({keys_to_search_at: values_to_find}, {$set: {keys_to_search_at: values_to_update}}); //el $set es la accion, es la más comun de uptdate
 
 //Delete
 const userDelet = await users.deleteOne({keys_to_search_at: values_to_find});
+const userDelet = await users.deleteMany({keys_to_search_at: values_to_find});
+
+//SPECIAL READS
+//Read with projections
+console.log(await users.findOne({keys_to_search_at: values_to_find}, {keys_for_projection: 1/0}));
+
+//Read with sort
+console.log(await users.findOne({keys_to_search_at: values_to_find}, {keys_for_projection: 1/0}).sort({keys_for_sort: 1/-1}));
+
+//Read with projections, sort and paging
+console.log(await users.findOne({keys_to_search_at: values_to_find}, {keys_for_projection: 1/0}).sort({keys_for_sort: 1/-1}).skip(skip_gap).limit(thresh));
 
 
 COMO SE VE TODAS LAS FUNCIONES SON ASINCRONAS ASI QUE SE TRABAJAN CON PROMESAS O AWAIT EN UNA ASYNC
