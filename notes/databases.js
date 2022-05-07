@@ -103,3 +103,105 @@ const knex = require("knex")({
 knexLib es un submodulo de knx que permite crear una clase que maneje las operaciones y que en nuestro codigo
 principal solo llamemos a los metodos de esa clase, y que quede el codigo más limpio y menos repetitivo
 */
+
+/*
+
+MongoDB : base de datos no relacional más utilizada
+
+Se puede trabajar de manera remota (accediendo a un servidor en cloud) o creando nuestro servidor local.
+En general se usa local para desarrollo y testing y luego se usa la nube para el uso real.
+Uso gratuito para personas, tiene version empresarial.
+
+Trabaja con colecciones y documentos: similar a JSON (como Firebase).
+TABLA SQL -> COLECCION noSQL
+FILA SQL -> DOCUMENTOS noSQL
+
+al usarlo local, se descarga y se instalan los archivos que proveen dos ejecutables:
+-- mongod.exe representa el servidor, sirve para crear los archivos necesarios que van a actuar como base de datos en una
+carpeta y generar el servidor al cual hacer las consultas
+-- mongo.exe representa el cliente con el que podemos hacer consultas a la base de datos
+
+ALGUNOS COMANDOS:
+mongod --dbpath path/to/db -> levanta el servidor de base de datos en la carpeta deeterminada, creando los archivos si es necesario (la primera vez)
+mongo -> genera el cliente para hacer las consultas (el servidor debe estar levantado)
+--dentro del cliente de mongo:
+----show dbs -> muestra las bases de datos que contengan datos
+----show collections -> muestra las collecciones dentro de la base de datos seleccionada
+----db -> muestra la base de datos seleccionada para trabajar
+----use __ -> permite seleccionar con que base de datos se trabajara, la crea si no existe
+----db.____ -> selecciona una cierta coleccion dentro de la base de datos actual
+----db.____.insert(__) -> inserta un nuevo documento en una coleccion de la base de datos actualmente seleccionada
+----db.____.find(__) -> busca algun documento en la coleccion, o lista todos los documentos si no se pasa parametro.
+
+Conexion por GUI a la base de datos:
+Robo 3T -> Más estilizada, pero al ser paga se usa menos, tiene periood de prueba
+MongoDBCompass -> viene con la instalacion gratuita de MongoDB
+
+La mayoría de las cosas las trabajamos desde la consola propia de mongoDB pero me parece que es lo mismo que usar el paquete/librería de mongo en JS. (REVISAR)
+*/
+
+/*
+
+MONGOOSE: https://mongoosejs.com/
+
+MongoDB Object managing for JS
+
+Se crea un modelo a partir de un esquema y un nombre (de base de datos), si esa base de datos no existe la crea:
+
+
+import mongoose from "mongoose";
+
+const userCollection = 'nombre_de_db'
+const userSchema = new mongoose.Schema({ //this object can be passed as props object form another
+    name: {type: String, required:true, max:100}, //max 100 chars
+    surname: {type: String, required:true, max:100}, //another important parameter is "unique" which blocks two regs with the same value on that key to be added
+    email: {type: String, required:true, max:100},
+    userName: {type: String, required:true, max:100},
+    password: {type: Number, required:true}
+})
+
+export const users = mongoose.model(userCollection, userSchema)
+
+Luego se usa el modelo para crear o eliminar datos, con comandos similares a los de mongo, el unico 
+un poco distinto es el create, ya que primero se crea el objeto a partir del esquema y luego se guarda en otro comando
+
+
+//Creation
+const newUser = {
+    name:"Juan",
+    surname:"López",
+    email:"jmlopesz@lopez.ccom",
+    userName:"zaga",
+    password:541235
+}
+
+const userSaveModel = new users(newUser);  //ACA se crea el objeto basado en el esuema
+let userSaved = await userSaveModel.save(); //ACA se guarda
+
+//Read
+console.log(await users.findOne({keys_to_search_at: values_to_find}));
+console.log(await users.findMany({keys_to_search_at: values_to_find}));
+
+//Update
+const userUpdate = await users.updateOne({keys_to_search_at: values_to_find}, {$set: {keys_to_search_at: values_to_update}}); //el $set es la accion, es la más comun de uptdate
+const userUpdate = await users.updateMany({keys_to_search_at: values_to_find}, {$set: {keys_to_search_at: values_to_update}}); //el $set es la accion, es la más comun de uptdate
+
+//Delete
+const userDelet = await users.deleteOne({keys_to_search_at: values_to_find});
+const userDelet = await users.deleteMany({keys_to_search_at: values_to_find});
+
+//SPECIAL READS
+//Read with projections
+console.log(await users.findOne({keys_to_search_at: values_to_find}, {keys_for_projection: 1/0})); //1: show, 0: not show
+
+//Read with sort
+console.log(await users.findOne({keys_to_search_at: values_to_find}, {keys_for_projection: 1/0}).sort({keys_for_sort: 1/-1})); //1: ascending, -1: descending
+
+//Read with projections, sort and paging
+console.log(await users.findOne({keys_to_search_at: values_to_find}, {keys_for_projection: 1/0}).sort({keys_for_sort: 1/-1}).skip(skip_gap).limit(thresh));
+
+
+COMO SE VE TODAS LAS FUNCIONES SON ASINCRONAS ASI QUE SE TRABAJAN CON PROMESAS O AWAIT EN UNA ASYNC
+
+
+*/
