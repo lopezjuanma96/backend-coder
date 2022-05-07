@@ -192,10 +192,10 @@ const userDelet = await users.deleteMany({keys_to_search_at: values_to_find});
 
 //SPECIAL READS
 //Read with projections
-console.log(await users.findOne({keys_to_search_at: values_to_find}, {keys_for_projection: 1/0}));
+console.log(await users.findOne({keys_to_search_at: values_to_find}, {keys_for_projection: 1/0})); //1: show, 0: not show
 
 //Read with sort
-console.log(await users.findOne({keys_to_search_at: values_to_find}, {keys_for_projection: 1/0}).sort({keys_for_sort: 1/-1}));
+console.log(await users.findOne({keys_to_search_at: values_to_find}, {keys_for_projection: 1/0}).sort({keys_for_sort: 1/-1})); //1: ascending, -1: descending
 
 //Read with projections, sort and paging
 console.log(await users.findOne({keys_to_search_at: values_to_find}, {keys_for_projection: 1/0}).sort({keys_for_sort: 1/-1}).skip(skip_gap).limit(thresh));
