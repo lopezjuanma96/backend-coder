@@ -3,13 +3,11 @@
 /////////////////////////
 import ContenedorProd from './daos/prods/contenedorProductosKnexClass.js';
 import ContenedorChat from './daos/chat/contenedorChatKnexClass.js';
-import Contenedor from './daos/contenedorClass.js';
 import { readFileSync } from 'fs';
 
 import express from 'express'
-import { Router } from 'express';
-
-import { mwSearchId, checkUser } from './utils/mws.js';
+import routerProd from './utils/routes/productRoute.js';
+import routerCart from './utils/routes/cartRoute.js';
 
 import { engine } from 'express-handlebars';
 
@@ -22,11 +20,8 @@ import { Server as HttpServer } from 'http';
 const app = express();
 const http = new HttpServer(app);
 const io = new IOServer(http);
-const routerProd = new Router();
-const routerCart = new Router();
 const prod = new ContenedorProd();
 const messages = new ContenedorChat();
-const cart = new Contenedor('./carritoCont.json');
 const PORT = 8080;
 
 app.use(express.json())
@@ -50,143 +45,12 @@ app.use(express.static('./views'));
 //////////////////////////////////////
 ////// PRODUCT REQUESTS
 //////////////////////////////////////
-routerProd.get('/productos', mwSearchId, (req, res) => {
-    const id = res.locals.id;
-    if(isNaN(id)){
-        prod.getAll()
-        .then((allProducts) => res.render('main', {data:allProducts, dataExist:allProducts?allProducts.length>0:false}))
-        .catch((e) => console.log(e));
-    } else {
-        try{
-            prod.getById(id)
-            .then((prod) => res.send(prod))
-            .catch((e) => console.log(e));
-        } catch (err) {
-            res.status(500).send({error: "El producto no existe"})
-        }
-    }
-})
-
-routerProd.post('/productos', (req, res) => {
-    const body = req.body;
-    const parsePrice = parseFloat(body.price);
-    if(isNaN(parsePrice)){
-        res.status(400).send("Invalid Price Input");
-    } else {
-        const newProd = {...body, price: parsePrice};
-        prod.save(newProd)
-        .then(() => res.redirect('/'))
-        .catch((e) => console.log(e))
-        .finally(prod.close());
-    }
-})
-
-routerProd.put('/productos', mwSearchId, (req, res) => {
-    const id = res.locals.id;
-    const body = req.body;
-    const parsePrice = parseFloat(body.price);
-    if(isNaN(id)){
-        res.status(400).send({error: "Invalid Product ID"});
-    } else if (isNaN(parsePrice)){
-        res.status(400).send("Invalid Price Input");
-    } else {
-        try{
-            const newProd = {...body, price: parsePrice};
-            prod.change(id, newProd)
-            .then(() => res.status(200).send(newProd))
-            .catch((e) => {throw e})
-            .finally(prod.close());
-        } catch (err) {
-            res.status(500).send({error: "El producto no existe"})
-        }
-    }
-})
-
-routerProd.delete('/productos', mwSearchId, (req, res) => {
-    const id = res.locals.id;
-    if(isNaN(id)){
-        res.status(400).send({error: "Invalid Product ID"});
-    } else {
-        try{
-            prod.getById(id)
-            .then(res.status(200).send(temp))
-            .catch((e) => {throw e});
-            prod.deleteById(id)
-            .catch((e) => {throw e})
-            .finally(prod.close());
-        } catch (err) {
-            res.status(500).send({error: "El producto no existe"})
-        }
-    }
-})
 
 app.use('/api/productos', routerProd);
 
 //////////////////////////////////////
 ////// CART REQUESTS
 //////////////////////////////////////
-
-routerCart.post('/', (req, res) => {
-    const newId = cart.save({productos: []});  //i dont know why this is returning a promise.
-    res.status(200).send(JSON.stringify({id: newId}));
-})
-
-routerCart.delete('/:id', (req, res) => {
-    const thisCartId = parseFloat(req.params.id);
-    try{
-        const deletedItem = cart.getById(thisCartId);
-        cart.deleteById(thisCartId);
-        res.status(200).send(JSON.stringify({deletedItem}));
-    } catch (e) {
-        res.status(500).send(JSON.stringify({error: "ID carrito inexistente"}));
-    }
-})
-
-routerCart.get('/:id/productos', (req, res) => {
-    const thisCartId = parseFloat(req.params.id);
-    const thisCart = cart.getById(thisCartId);
-    res.status(200).send(JSON.stringify(thisCart.productos));
-})
-
-routerCart.post('/:id/productos/:id_prod', (req, res) => {
-    const thisCartId = parseFloat(req.params.id);
-    const thisProdId = parseFloat(req.params.id_prod);
-    try{
-        const thisCart = cart.getById(thisCartId);
-        try {
-            const thisProd = prod.getById(thisProdId);
-            thisCart.productos.push(thisProd);
-            cart.change(thisCartId, thisCart);
-            res.status(200).send(JSON.stringify(thisCart));
-        } catch (e) {
-            res.status(500).send(JSON.stringify({error: "ID producto inexistente"}));
-        }
-    } catch (e) {
-        res.status(500).send(JSON.stringify({error: "ID carrito inexistente"}));
-    }
-})
-
-routerCart.delete('/:id/productos/:id_prod', (req, res) => {
-    const thisCartId = parseFloat(req.params.id);
-    const thisProdId = parseFloat(req.params.id_prod);
-    try{
-        const thisCart = cart.getById(thisCartId);
-        try {
-            const thisProd = prod.getById(thisProdId);
-            if (thisCart.productos.find((e) => e.id === thisProdId)){
-                thisCart.productos = thisCart.productos.filter((e) => e.id !== thisProdId);
-                cart.change(thisCartId, thisCart);
-                res.status(200).send(JSON.stringify(thisCart));
-            } else {
-                res.status(200).send("There's no product of that ID in the requested Cart\n" + JSON.stringify(thisCart))
-            }
-        } catch (e) {
-            res.status(500).send(JSON.stringify({error: "ID producto inexistente"}));
-        }
-    } catch (e) {
-        res.status(500).send(JSON.stringify({error: "ID carrito inexistente"}));
-    }
-})
 
 app.use('/api/carrito', routerCart);
 
