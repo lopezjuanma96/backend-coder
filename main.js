@@ -1,15 +1,15 @@
 /////////////////////////
 //// IMPORTS
 /////////////////////////
-const ContenedorProd = require('./contenedorProductosKnexClass.js');
-const ContenedorChat = require('./contenedorChatKnexClass.js')
-const Contenedor = require('./contenedorClass.js');
-const express = require('express');
-const { Router } = express;
-const { engine } = require('express-handlebars');
-const { Server: IOServer } = require("socket.io");
-const { Server: HttpServer } = require("http");
-const { readFileSync } = require('fs');
+import ContenedorProd from './daos/prods/contenedorProductosKnexClass.js';
+import ContenedorChat from './daos/chat/contenedorChatKnexClass.js';
+import Contenedor from './daos/contenedorClass.js';
+import express from 'express'
+import { Router } from 'express';
+import { engine } from 'express-handlebars';
+import { Server as IOServer } from 'socket.io';
+import { Server as HttpServer } from 'http';
+import { readFileSync } from 'fs';
 
 ///////////////////////
 //// SETUP
@@ -30,17 +30,17 @@ app.use(express.urlencoded({extended: true}))
 app.engine('hbs', engine({
     extname: '.hbs',
     defaultLayout: 'index.hbs',
-    layoutsDir: __dirname + '/views/layouts',
-    partialsDir: __dirname + '/views/partials'
+    layoutsDir: './views/layouts',
+    partialsDir: './views/partials'
 }))
 app.set('view engine', 'hbs');
-app.set('views', __dirname + '/views');
+app.set('views', './views');
 
 const server = http.listen(PORT, () => {console.log(`Servidor abierto en puerto ${PORT}`)})
 
 app.on('error', (err) => {console.log(`Error en la carga del servidor:\n${err}`)})
-app.use(express.static(__dirname + '/public'));
-app.use(express.static(__dirname + '/views'));
+app.use(express.static('./public'));
+app.use(express.static('./views'));
 
 /////////////////////////////////////////
 ///////// TOOLS: (should be imported from another script later)
@@ -79,7 +79,7 @@ const checkUser = (req, res, next) => {
 ////// PRODUCT REQUESTS
 //////////////////////////////////////
 routerProd.get('/productos', mwSearchId, (req, res) => {
-    id = res.locals.id;
+    const id = res.locals.id;
     if(isNaN(id)){
         prod.getAll()
         .then((allProducts) => res.render('main', {data:allProducts, dataExist:allProducts?allProducts.length>0:false}))
@@ -110,7 +110,7 @@ routerProd.post('/productos', (req, res) => {
 })
 
 routerProd.put('/productos', mwSearchId, (req, res) => {
-    id = res.locals.id;
+    const id = res.locals.id;
     const body = req.body;
     const parsePrice = parseFloat(body.price);
     if(isNaN(id)){
@@ -131,7 +131,7 @@ routerProd.put('/productos', mwSearchId, (req, res) => {
 })
 
 routerProd.delete('/productos', mwSearchId, (req, res) => {
-    id = res.locals.id;
+    const id = res.locals.id;
     if(isNaN(id)){
         res.status(400).send({error: "Invalid Product ID"});
     } else {
