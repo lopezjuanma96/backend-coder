@@ -4,12 +4,17 @@
 import ContenedorProd from './daos/prods/contenedorProductosKnexClass.js';
 import ContenedorChat from './daos/chat/contenedorChatKnexClass.js';
 import Contenedor from './daos/contenedorClass.js';
+import { readFileSync } from 'fs';
+
 import express from 'express'
 import { Router } from 'express';
+
+import { mwSearchId, checkUser } from './utils/mws.js';
+
 import { engine } from 'express-handlebars';
+
 import { Server as IOServer } from 'socket.io';
 import { Server as HttpServer } from 'http';
-import { readFileSync } from 'fs';
 
 ///////////////////////
 //// SETUP
@@ -41,39 +46,6 @@ const server = http.listen(PORT, () => {console.log(`Servidor abierto en puerto 
 app.on('error', (err) => {console.log(`Error en la carga del servidor:\n${err}`)})
 app.use(express.static('./public'));
 app.use(express.static('./views'));
-
-/////////////////////////////////////////
-///////// TOOLS: (should be imported from another script later)
-////////////////////////////////////////
-const mwSearchId = (req, res, next) => {
-    if(Object.entries(req.query).length > 0){
-        const searchId = parseFloat(req.query.id);
-        if(isNaN(searchId)){
-            res.status(400).send({error: "Invalid Product ID"});
-        } else {
-            res.locals.id = searchId;
-            next();
-        }
-    } else {
-        res.locals.id = NaN;
-        next();
-    }
-}
-
-const checkUser = (req, res, next) => {
-    const userName = localStorage.getItem('userName')
-    console.log(`Leyendo usuario ${userName}`)
-    if(userName){
-        const userAccessList = JSON.parse(readFileSync("./userAccessList.json"));
-        if(userName != "" && userAccessList.find((elem) => elem === userName)){
-            console.log("El usuario se encuentra en la base de datos")
-            next();
-        } else {
-            console.log("El usuario no se encuentra en la base de datos")
-            req.redirect("/");
-        }
-    }
-}
 
 //////////////////////////////////////
 ////// PRODUCT REQUESTS
