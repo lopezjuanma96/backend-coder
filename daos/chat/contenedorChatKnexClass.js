@@ -1,7 +1,8 @@
-const knexLib = require('knex');
-const options = require('./settings/sqLiteOptions.js')
+import knex from 'knex';
+const { knex: knexLib} = knex;
+import options from '../settings/sqLiteOptions.js';
 
-module.exports = class Contenedor {
+export default class Contenedor {
 
     knex;
     tableReady;

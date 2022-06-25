@@ -1,5 +1,6 @@
 {
   "name": "backend-coder",
+  "type": "module",
   "version": "1.0.0",
   "description": "Repo for publishing updates and works of Coderhouse Backend Course",
   "main": "dist/main.js",

@@ -26,8 +26,24 @@ async function CRUD(){
         //Read
         console.log(await users.findOne({}));
         
+        //Special Read: filter properties
+        console.log(await users.find({}, {name:1, username:1})) //this will bring all users but only show name and username
+
+        //Special Read: filter registers
+        console.log(await users.find({ userName: 'zaga' })) //this filters all users with name zaga
+        
+        //Special Read: sort
+        console.log(await users.find({}).sort({ name: 1 })) //this will find all cases, and sort them alphabetically ascendant with the name
+
+        //Special Read: pagination
+        console.log(await users.find({}).sort({ name: 1 }).skip(1).limit(2)) //this will find all cases, sort them alphabetically by name but onlly return each other one up to the third one bc it's limit(2), which would bring first, third
+        console.log(await users.find({}).sort( {surname : -1}).limimt(1)) //this will bring the last name sorted alphabetically
+
+        /*For special read operations you could obviously bring all the data and filter, sort or select with JS funcitons, but that would be a waste of operations and bandwidth,
+        so it should only be done when the operations are to complex */
+
         //Update
-        const userUpdate = await users.updateOne({name: 'Juan'}, {$set: {password:3214}});
+        const userUpdate = await users.updateOne({name: 'Juan'}, {$set: {password:3214}}); //a copy of the updated register is returned, in this case to userUpdate
         console.log("Updated");
         
         console.log(await users.findOne({}));
