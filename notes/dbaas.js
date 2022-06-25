@@ -25,4 +25,27 @@ Al crear un cluster me puedo conectar de 3 maneras:
 A) usando commandos del mongo shell (con mongo.exe del bin del directorio de Mongo)
 B) usando la API desde nuestra aplicacion
 C) usando MongoDB compass, con la GUI
+
+FIREBASE: https://firebase.google.com/
+
+En página de firebase:
+- Crear un proyecto con nombre
+- Ir a config -> cuentas de servicio
+- Generar clave privada
+
+En nuestro script:
+- Agregar snippet de codigo
+- Dentro del snippet de conexión, proveído por la parte de autenticacion, agregar -> databaseURL: 'https://NOMBREDELABASEDEDATOS.firebaseio.com', ej:
+
+const admin = require("firebase-admin");
+
+//AUTHENTICATION - Could be imported////
+const serviceAccount = require("./db/react-backend-67669-firebase-adminsdk-wu9wg-56253767e1.json");
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: 'https://react-backend-67669.firebaseio.com'
+});
+//END AUTHENTICATION//
+
 */
