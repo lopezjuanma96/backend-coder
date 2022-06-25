@@ -27,7 +27,7 @@ async function CRUD(){
         console.log(await users.findOne({}));
         
         //Update
-        const userUpdate = await users.updateOne({name: 'Juan'}, {$set: {password:3214}});
+        const userUpdate = await users.updateOne({name: 'Juan'}, {$set: {password:3214}}); //a copy of the updated register is returned, in this case to userUpdate
         console.log("Updated");
         
         console.log(await users.findOne({}));
