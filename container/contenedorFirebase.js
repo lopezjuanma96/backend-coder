@@ -51,7 +51,7 @@ export default class Contenedor {
         const docs = querySnapshot.docs;
         return docs.map((doc) => ({
             id: doc.id,
-            //COMPLETAR
+            ...doc
         }))
     }
 
