@@ -3,7 +3,6 @@ import * as fs from 'fs';
 export default class Contenedor {
 
     filePath;
-    fileString;
 
     constructor(_filePath){
         this.filePath = _filePath || "./container.json";
