@@ -8,4 +8,5 @@ const options = {
         database: 'productsDB'
     }
 }
+
 export default options

@@ -1,8 +1,7 @@
 /////////////////////////
 //// IMPORTS
 /////////////////////////
-import ContenedorProd from './daos/prods/contenedorProductosKnexClass.js';
-import ContenedorChat from './daos/chat/contenedorChatKnexClass.js';
+import { prodDAO as prod, chatDAO as messages } from './DAOSelector.js';
 import { readFileSync } from 'fs';
 
 import express from 'express'
@@ -20,8 +19,6 @@ import { Server as HttpServer } from 'http';
 const app = express();
 const http = new HttpServer(app);
 const io = new IOServer(http);
-const prod = new ContenedorProd();
-const messages = new ContenedorChat();
 const PORT = 8080;
 
 app.use(express.json())

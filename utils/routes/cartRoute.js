@@ -1,8 +1,4 @@
-import Contenedor from "../../daos/contenedorClass.js";
-const cart = new Contenedor('./carritoCont.json');
-
-import ContenedorProd from "../../daos/prods/contenedorProductosKnexClass.js";
-const prod = new ContenedorProd();
+import { cartDAO as cart, prodDAO as prod } from "../../DAOSelector.js";
 
 import { Router } from "express";
 
@@ -33,23 +29,18 @@ routerCart.get('/:id/productos', (req, res) => {
 routerCart.post('/:id/productos/:id_prod', (req, res) => {
     const thisCartId = parseFloat(req.params.id);
     const thisProdId = parseFloat(req.params.id_prod);
-    try{
-        const thisCart = cart.getById(thisCartId);
+    let gotCart = false;
+    cart.getById(thisCartId)
+    .then((thisCart) => {
+        gotCart = true;
         prod.getById(thisProdId)
-        .then((thisProd) => {
-            console.log(thisProd)
+        .then((thisProd) => {s
             thisCart.productos.push(thisProd);
-            console.log(thisCart)
-            cart.change(thisCartId, thisCart);
-            console.log(thisCart)
-            res.status(200).send(JSON.stringify(thisCart));
-        })
-        .catch((e) => {
-            res.status(500).send(JSON.stringify({error: "ID producto inexistente"}));
-        })
-    } catch (e) {
-        res.status(500).send(JSON.stringify({error: "ID carrito inexistente"}));
-    }
+            cart.change(thisCartId, thisCart)
+            .then((changedCart) => res.status(200).send(JSON.stringify(thisCart)))
+            .catch((e) => res.status(500).send(JSON.stringify({error: "Error al actualizar carrito"})))
+        }).catch((e) => res.status(500).send(JSON.stringify({error: "ID producto inexistente"})))
+    }).catch((e) => res.status(500).send(JSON.stringify({error: "ID carrito inexistente"})))
 })
 
 routerCart.delete('/:id/productos/:id_prod', (req, res) => {
