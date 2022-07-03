@@ -1,62 +1,51 @@
-import { knex } from '../daos/settings/mariaOptions.js'
-
 export default class Contenedor {
 
-    knex;
-    tableReady;
-    db;
+    data;
 
     constructor(_dbName, _schemaFunction){
-        this.knex = knex;
-        this.db = db;
-        this.knex.schema.hasTable(this.db)
-        .then((res) => {
-            this.tableReady = res;
-            if (!res){
-                this.knex.schema.createTable(this.db, _schemaFunction)
-                .then(() => this.tableReady = true);
-            }
+        this.data = [];
+    }
+
+    _getNewId(){
+        let newId = 1;
+        this.data.forEach((e) => {
+            if (e.id > newId) { newId = e.id}
         })
+        return newId
     }
 
     save(val){
-        if (this.tableReady){
-            const toAdd = {...val};
-            return this.knex(this.db).insert([toAdd]);
-        }
+        this.data.push({id: this._getNewId(), ...val})
     }
 
     change(id, val){
-        if (this.tableReady){
-            return this.knex.from(this.db).where('id', id).update(val);
-        }
+        let toChangePos;
+        this.data.find((e, i) => {
+            toChangePos = i;
+            return e.id === id
+        })
+        this.data[toChangePos] = val;
     }
 
     getAll(){
-        if (this.tableReady){
-            return this.knex(this.db).select('*');
-        }
+        return this.data;
     }
 
     getById(id){
-        if (this.tableReady){
-            return this.knex(this.db).select('*').where('id', id);
-        }
+        return this.data.find(e => e.id === id)
     }
 
     deleteAll(){
-        if (this.tableReady){
-            return this.knex.schema.dropTable(this.db);
-        }
+        this.data.length = 0;
     }
 
     deleteById(id){
-        if (this.tableReady){
-            return this.knex.from(this.db).where('id', id).del();
-        }
-    }
-
-    close() {
-        this.knex.destroy();
+        const temp = this.data;
+        this.deleteAll()
+        temp.forEach((e) => {
+            if(e.id !== id){
+                this.data.push(e);
+            }
+        })
     }
 }

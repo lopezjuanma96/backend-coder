@@ -22,6 +22,16 @@ const cartSchema = new mongoose.Schema({
     timestamp: {type: Number, required: true}
 })
 
+const chatCollection = 'chat'
+const chatSchema = new mongoose.Schema({
+    id: {type: Number, required: true},
+    socket: {type: String, required: true, max: 100},
+    user: {type: String, required: true, max: 50},
+    msg: {type: String, max: 255},
+    date: {type: Date}
+})
+
 export const productsModel = mongoose.model(productsCollection, productsSchema)
 export const cartModel = mongoose.model(cartCollection, cartSchema)
+export const chatModel = mongoose.model(chatCollection, chatSchema)
 export const URL = "mongodb+srv://zagador123:446032@cluster0.snysn.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"

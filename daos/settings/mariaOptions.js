@@ -1,6 +1,3 @@
-import knex from 'knex';
-const { knex: knexLib} = knex;
-
 const options = {
     client:'mysql', // remember this needs to have whichever database client is used with npm
     connection: {
@@ -12,4 +9,4 @@ const options = {
     }
 }
 
-export const knex = knexLib(options)
+export default options
