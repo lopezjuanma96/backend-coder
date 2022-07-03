@@ -1,10 +1,6 @@
-const prodChoice = "Firebase"
-const chatChoice = "Mem"
-const cartChoice = "Archivo"
-
-import ProductosDAO from `./daos/prods/productosDAO${prodChoice}`
-import ChatDAO from `./daos/prods/productosDAO${chatChoice}`
-import CarritoDAO from `./daos/prods/productosDAO${cartChoice}`
+import ProductosDAO from './daos/prods/productosDAOFirebase.js'
+import ChatDAO from './daos/chat/chatDAOMem.js'
+import CarritoDAO from './daos/cart/CarritoDAOMongoAtlas.js'
 
 export const prodDAO = new ProductosDAO();
 export const chatDAO = new ChatDAO();

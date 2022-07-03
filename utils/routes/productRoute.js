@@ -1,8 +1,7 @@
 import { Router } from "express";
-import Contenedor from "../../daos/prods/contenedorProductosKnexClass.js";
+import { prodDAO as prod } from "../../DAOSelector.js";
 import { mwSearchId, checkUser } from "../mws.js";
 
-const prod = new Contenedor();
 const routerProd = new Router();
 
 routerProd.get('/productos', mwSearchId, (req, res) => {

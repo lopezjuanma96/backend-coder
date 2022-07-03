@@ -6,7 +6,7 @@ export default class Contenedor {
         this.data = [];
     }
 
-    _getNewId(){
+    async _getNewId(){
         let newId = 1;
         this.data.forEach((e) => {
             if (e.id > newId) { newId = e.id}
@@ -14,11 +14,11 @@ export default class Contenedor {
         return newId
     }
 
-    save(val){
+    async save(val){
         this.data.push({id: this._getNewId(), ...val})
     }
 
-    change(id, val){
+    async change(id, val){
         let toChangePos;
         this.data.find((e, i) => {
             toChangePos = i;
@@ -27,19 +27,19 @@ export default class Contenedor {
         this.data[toChangePos] = val;
     }
 
-    getAll(){
+    async getAll(){
         return this.data;
     }
 
-    getById(id){
+    async getById(id){
         return this.data.find(e => e.id === id)
     }
 
-    deleteAll(){
+    async deleteAll(){
         this.data.length = 0;
     }
 
-    deleteById(id){
+    async deleteById(id){
         const temp = this.data;
         this.deleteAll()
         temp.forEach((e) => {

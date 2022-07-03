@@ -27,7 +27,7 @@ export default class Contenedor {
     
     async save(val){
         const id = await this._getNewId();
-        const toSave = new this.model({id: id, ...val});
+        const toSave = new this.model({id: id, ...val, timestamp:Date.now()});
         await toSave.save();
         console.log(`Created new value with ID: ${id}`);
     }
@@ -38,19 +38,21 @@ export default class Contenedor {
     }
 
     async getAll(){
-        return await this.model.find()
+        const data = await this.model.find().lean().exec(); //using lean to get a json object instead of a mongoose one: https://stackoverflow.com/questions/59690923/handlebars-access-has-been-denied-to-resolve-the-property-from-because-it-is
+        return data
     }
 
     async getById(id){
-        return await this.model.find({id: id})
+        const data = await this.model.findOne({id: id}).lean().exec();//using lean to get a json object instead of a mongoose one: https://stackoverflow.com/questions/59690923/handlebars-access-has-been-denied-to-resolve-the-property-from-because-it-is
+        return data
     }
 
     async deleteAll(){
-        this.query.delete(); //REVISAR
+        this.query.delete().exec(); //REVISAR
     }
 
     async deleteById(id){
-        const itemDeleted = await this.model.deleteOne({id: id})
+        const itemDeleted = await this.model.deleteOne({id: id}).exec();
         console.log(`Deleted element with ID: ${id} \n`, itemDeleted);
     }
 }

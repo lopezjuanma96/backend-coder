@@ -17,7 +17,7 @@ const cartProductSchema = new mongoose.Schema({
     id: {type: Number, required: true}
 })
 const cartSchema = new mongoose.Schema({
-    products: {type: [cartProductSchema]}, //sets products to be an array of the schema cartProductSchema
+    productos: {type: [cartProductSchema]}, //sets products to be an array of the schema cartProductSchema
     id: {type: Number, required: true},
     timestamp: {type: Number, required: true}
 })

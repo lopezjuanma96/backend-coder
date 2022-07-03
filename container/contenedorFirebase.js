@@ -14,7 +14,7 @@ export default class Contenedor {
         });
         this.db = admin.firestore();
         this.query = this.db.collection(collection);
-        console.log(`Connected to Firestor Collection: ${collection}`);
+        console.log(`Connected to Firestore Collection: ${collection}`);
     }
 
     async _getNewId(){
@@ -36,7 +36,7 @@ export default class Contenedor {
     async save(val){
         const id = await this._getNewId();
         const doc = this.query.doc(`${id}`);
-        await doc.create(val);
+        await doc.create({...val, timestamp:Date.now()});
         console.log(`Created new value with ID: ${id}`);
     }
 
@@ -49,15 +49,19 @@ export default class Contenedor {
     async getAll(){
         const querySnapshot = await this.query.get();
         const docs = querySnapshot.docs;
+        console.log(docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data()
+        })))
         return docs.map((doc) => ({
             id: doc.id,
-            ...doc
+            ...doc.data()
         }))
     }
 
     async getById(id){
-        const doc = this.query.doc(`${id}`);
-        return doc
+        const doc = await this.query.doc(`${id}`).get();
+        return doc.data()
     }
 
     async deleteAll(){
