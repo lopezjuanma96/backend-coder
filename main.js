@@ -2,7 +2,7 @@
 //// IMPORTS
 /////////////////////////
 import { prodDAO as prod, chatDAO as messages } from './DAOSelector.js';
-import { readFileSync } from 'fs';
+import { log as msgSchema } from './utils/norms/msgSchema.js'
 
 import express from 'express'
 import routerProd from './utils/routes/productRoute.js';
