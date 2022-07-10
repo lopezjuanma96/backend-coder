@@ -3,6 +3,8 @@
 /////////////////////////
 import { prodDAO as prod, chatDAO as messages } from './DAOSelector.js';
 import { log as msgSchema } from './utils/norms/msgSchema.js'
+import { inspect } from 'util'
+import { normalize, denormalize } from 'normalizr';
 
 import express from 'express'
 import routerProd from './utils/routes/productRoute.js';
@@ -78,11 +80,27 @@ io.on('connection', (socket) => {
     .catch((e) => console.log(e));
     //socket.emit('message', 'Este es un mensaje emitido por el socket del servidor'); //CUIDADO, es importante nombrar bien la variable (en este caso 'message') porque si no respeto el nombre del lado del cliente no va a andar
     socket.on('chatMessage', (data) => {
-        messages.save({socket: socket.id, ...data})
-        .then(() => {
-            messages.getAll()
-            .then((messageList) => io.sockets.emit('messageList', messageList))
-            .catch((e) => console.log(e));
+        messages.getAll()
+        .then((messageList) => {
+            if (messageList.length === 0){
+                const msgObj = {id: "messages", messages: [{id: "1", ...data}]};
+                messages.save(normalize(msgObj, msgSchema))
+                .then(() => {
+                    messages.getAll()
+                    .then((messageList) => io.sockets.emit('messageList', messageList))
+                    .catch((e) => console.log(e));
+                })
+            } else {
+                const msgObj = denormalize(messageList[0].result, msgSchema, messageList[0].entities);
+                const newId = msgObj.messages.map((o) => parseInt(o.id)).sort((a,b) => b-a)[0] + 1
+                msgObj.messages.push({ id: `${newId}`, ...data});
+                messages.change(0, normalize(msgObj, msgSchema))
+                .then(() => {
+                    messages.getAll()
+                    .then((messageList) => io.sockets.emit('messageList', messageList))
+                    .catch((e) => console.log(e));
+                })
+            }
         })
         .catch((e) => console.log(e)); //broadcast envío a todos los clientes conectados: io.sockets.emmit(..)
     });

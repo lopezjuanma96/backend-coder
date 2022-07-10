@@ -15,7 +15,8 @@ export default class Contenedor {
     }
 
     async save(val){
-        this.data.push({id: this._getNewId(), ...val})
+        const newId = await this._getNewId();
+        this.data.push({id: newId, ...val})
     }
 
     async change(id, val){

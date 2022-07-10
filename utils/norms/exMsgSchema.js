@@ -95,6 +95,7 @@ const log = new schema.Entity('logs', {
 });
 
 const normData = normalize(originalData, log)
+const denormData = denormalize(normData.result, log, normData.entities)
 
 console.log('Original:')
 console.log(util.inspect(originalData, false, 12))
@@ -105,3 +106,5 @@ console.log(JSON.stringify(normData).length)
 
 console.log(`Compression rate: ${(100*JSON.stringify(normData).length/JSON.stringify(originalData).length).toFixed(2)}%`)
 
+console.log('\n\ndeNorm:')
+console.log(util.inspect(denormData, false, 12))
