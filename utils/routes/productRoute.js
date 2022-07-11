@@ -1,10 +1,11 @@
 import { Router } from "express";
 import { prodDAO as prod } from "../../DAOSelector.js";
+import { productFaker } from "../fakerGen.js";
 import { mwSearchId, checkUser } from "../mws.js";
 
 const routerProd = new Router();
 
-routerProd.get('/productos', mwSearchId, (req, res) => {
+routerProd.get('/', mwSearchId, (req, res) => {
     const id = res.locals.id;
     if(isNaN(id)){
         prod.getAll()
@@ -21,7 +22,13 @@ routerProd.get('/productos', mwSearchId, (req, res) => {
     }
 })
 
-routerProd.post('/productos', (req, res) => {
+routerProd.get('/test', (req, res) => {
+    const iterations = req.query.number || 5;
+    const allProducts = productFaker(iterations);
+    res.render('main', {data:allProducts, dataExist:allProducts?allProducts.length>0:false})
+})
+
+routerProd.post('/', (req, res) => {
     const body = req.body;
     const parsePrice = parseFloat(body.price);
     if(isNaN(parsePrice)){
@@ -35,7 +42,7 @@ routerProd.post('/productos', (req, res) => {
     }
 })
 
-routerProd.put('/productos', mwSearchId, (req, res) => {
+routerProd.put('/', mwSearchId, (req, res) => {
     const id = res.locals.id;
     const body = req.body;
     const parsePrice = parseFloat(body.price);
@@ -56,7 +63,7 @@ routerProd.put('/productos', mwSearchId, (req, res) => {
     }
 })
 
-routerProd.delete('/productos', mwSearchId, (req, res) => {
+routerProd.delete('/', mwSearchId, (req, res) => {
     const id = res.locals.id;
     if(isNaN(id)){
         res.status(400).send({error: "Invalid Product ID"});
