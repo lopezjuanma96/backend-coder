@@ -1,4 +1,13 @@
-const socket = io();
+const socket = io(); //this comes from <script src="/socket.io/socket.io.js"></script> being run on the HMTL file
+
+const user = new normalizr.schema.Entity('users');
+const message = new normalizr.schema.Entity('messages', {
+    user: user
+});
+
+const chatSchema = new normalizr.schema.Entity('logs', {
+    messages: [message]
+});
 
 postProductButton = document.querySelector(".postProductButton");
 productForm = document.querySelector(".productsForm");
@@ -56,12 +65,10 @@ if(chatInputButton && chatUserNamePrompt){
     })
     socket.on("messageList", (data) => {
         if (data.length > 0){
-            const chatLogText = [];
-            for (k in data[0].entities.messages){
-                const elem = data[0].entities.messages[k]
-                chatLogText.push(`<p><b>${elem.user}:</b> ${elem.text} \t [${elem.date}]`)
-            }
-            chatLog.innerHTML = chatLogText.join('<br>')
+            const denormData = normalizr.denormalize(data[0].result, chatSchema, data[0].entities)
+            const compRate = (100*JSON.stringify(data[0].entities).length/JSON.stringify(denormData).length).toFixed(2);
+            const chatLogText = denormData.messages.map((elem) => `<p><b>${elem.user.alias}:</b> ${elem.text} \t [${elem.date}]`)
+            chatLog.innerHTML = `<h1>Compression Rate: ${compRate}%</h1>` + chatLogText.join('<br>')
         }
     })
 }
