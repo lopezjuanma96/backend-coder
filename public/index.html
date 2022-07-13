@@ -12,13 +12,25 @@
 </head>
 <body>
     <h2 class="mainTitle">Bienvenido a Nuestro Shop!</h2>
-    Email: <input class="userEmailInput">
-    Nombre: <input class="userNameInput">
-    Apellido: <input class="userSurnameInput">
-    Edad: <input class="userAgeInput">
-    Alias: <input class="userAliasInput">
+    <form class="loginForm">
+        <label class="loginFormLabel userEmailLabel">Email:</label>
+        <input class="userEmailInput">
+
+        <label class="loginFormLabel userNameLabel">Nombre:</label>
+        <input class="userNameInput">
+
+        <label class="loginFormLabel userSurnameLabel">Apellido:</label>
+        <input class="userSurnameInput">
+
+        <label class="loginFormLabel userAgeLabel">Edad:</label>
+        <input class="userAgeInput">
+
+        <label class="loginFormLabel userAliasLabel">Alias:</label>
+        <input class="userAliasInput">
+    </form>
     <br>
     <br>
+    <button class="loginButton">Ingresar</button>
     <a href="./api/productos"><button class="gotoProductsButton">Ir a Productos</button></a>
     <a href="./api/chat"><button class="gotoChatButton">Chatear</button></a>
     <script src="logic.js"></script>

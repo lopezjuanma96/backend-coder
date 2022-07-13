@@ -14,6 +14,16 @@ export const mwSearchId = (req, res, next) => {
 }
 
 export const checkUser = (req, res, next) => {
+    if (!req.sessions) {next()} //if sessions is not implemented, we won't check user
+    
+    if (req.sessions.userName) {
+        //HERE: permissions validation
+        next();
+    } else {
+        req.sessions.userName = req.query.userName;
+    }
+    
+    /* User permissions validation
     const userName = localStorage.getItem('userName')
     console.log(`Leyendo usuario ${userName}`)
     if(userName){
@@ -26,4 +36,5 @@ export const checkUser = (req, res, next) => {
             req.redirect("/");
         }
     }
+    */
 }
