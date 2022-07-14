@@ -43,9 +43,12 @@ button:hover{
     flex-direction: column;
     width: 50%;
     row-gap: 10px;
+    margin-bottom: 10px
 }
 
 .loginFormLabel{
+    display: flex;
+    flex-direction: column;
     width:100%;
     font-weight: bold;
 }

@@ -3,7 +3,6 @@
 /////////////////////////
 import { prodDAO as prod, chatDAO as messages } from './DAOSelector.js';
 import { log as msgSchema } from './utils/norms/msgSchema.js'
-import { inspect } from 'util'
 import { normalize, denormalize } from 'normalizr';
 
 import express from 'express'
@@ -14,6 +13,10 @@ import { engine } from 'express-handlebars';
 
 import { Server as IOServer } from 'socket.io';
 import { Server as HttpServer } from 'http';
+
+import cookieParser from 'cookie-parser';
+import session from 'express-session';
+import mongoStore from 'connect-mongo';
 
 ///////////////////////
 //// SETUP
@@ -41,6 +44,18 @@ app.on('error', (err) => {console.log(`Error en la carga del servidor:\n${err}`)
 app.use(express.static('./public'));
 app.use(express.static('./views'));
 
+app.use(cookieParser());
+
+app.use(session({
+    store: mongoStore.create( { mongoUrl: 'mongodb+srv://zagador123:446032@cluster0.snysn.mongodb.net/myFirstDatabase?retryWrites=true&w=majority',
+                                useNewUrlParser: true,
+                                useUnifiedTopology: true
+    }),
+    secret: 'secreto',
+    resave: false,
+    saveUninitialized: false
+}));
+
 //////////////////////////////////////
 ////// PRODUCT REQUESTS
 //////////////////////////////////////
@@ -62,12 +77,23 @@ app.get('/api/chat', (req, res) => {
 })
 
 //////////////////////////////////////
+////// LOGIN REQUESTS
+//////////////////////////////////////
+
+app.post('/api/login', (req, res) => {
+    const logObj = req.body;
+    Object.keys(logObj).forEach((k) => req.session[k] = req.body[k]);
+    res.status(200).redirect("/");
+})
+
+//////////////////////////////////////
 ////// GLOBAL MIDDLEWARES
 //////////////////////////////////////
 
 app.use((req, res, next) => {
     res.status(404).send(JSON.stringify({ error : -2, descripcion: `ruta ${req.url} metodo ${req.method} no implementada`}))
 })
+
 
 ///////////////////////////////////
 ////// WEBSOCKET

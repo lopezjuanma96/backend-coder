@@ -74,6 +74,7 @@ if(chatInputButton && chatUserNamePrompt){
 }
 
 if(userNameInput){
+    
     userEmailInput.value = localStorage.getItem('userEmail');
     userEmailInput.addEventListener('keypress', (e) => {
         localStorage.setItem('userEmail', userEmailInput.value + e.key);

@@ -5,6 +5,8 @@ import { mwSearchId, checkUser } from "../mws.js";
 
 const routerProd = new Router();
 
+routerProd.use(checkUser);
+
 routerProd.get('/', mwSearchId, (req, res) => {
     const id = res.locals.id;
     if(isNaN(id)){

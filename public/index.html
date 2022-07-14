@@ -11,26 +11,38 @@
     <script src="https://cdn.jsdelivr.net/npm/normalizr@3.6.2/dist/normalizr.browser.min.js"></script> 
 </head>
 <body>
-    <h2 class="mainTitle">Bienvenido a Nuestro Shop!</h2>
-    <form class="loginForm">
-        <label class="loginFormLabel userEmailLabel">Email:</label>
-        <input class="userEmailInput">
+    <section class="loggedOutView">
+        <h2 class="mainTitle">Bienvenido a Nuestro Shop!</h2>
+        <form class="loginForm">
+            <label class="loginFormLabel userEmailLabel">Email:
+            <input name="userEmail" class="userEmailInput">
+            </label>
 
-        <label class="loginFormLabel userNameLabel">Nombre:</label>
-        <input class="userNameInput">
+            <label class="loginFormLabel userNameLabel">Nombre:
+            <input name="userName" class="userNameInput">
+            </label>
 
-        <label class="loginFormLabel userSurnameLabel">Apellido:</label>
-        <input class="userSurnameInput">
+            <label class="loginFormLabel userSurnameLabel">Apellido:
+            <input name="userSurname" class="userSurnameInput">
+            </label>
 
-        <label class="loginFormLabel userAgeLabel">Edad:</label>
-        <input class="userAgeInput">
+            <label class="loginFormLabel userAgeLabel">Edad:
+            <input name="userAge" class="userAgeInput">
+            </label>
 
-        <label class="loginFormLabel userAliasLabel">Alias:</label>
-        <input class="userAliasInput">
-    </form>
-    <br>
-    <br>
-    <button class="loginButton">Ingresar</button>
+            <label class="loginFormLabel userAliasLabel">Alias:
+            <input name="userAlias" class="userAliasInput">
+            </label>
+
+            <button class="loginButton" type="submit" formaction="/api/login" formmethod="post">Ingresar</button>
+        </form>
+    </section>
+
+    <section class="loggedInView" hidden>
+        <h2 class="mainTitle">Bienvenido a Nuestro Shop</h2>
+        <button class="logoutButton">Salir</button>
+    </section>
+
     <a href="./api/productos"><button class="gotoProductsButton">Ir a Productos</button></a>
     <a href="./api/chat"><button class="gotoChatButton">Chatear</button></a>
     <script src="logic.js"></script>
