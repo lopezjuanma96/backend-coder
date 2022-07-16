@@ -14,6 +14,22 @@ button:hover{
     border-width: 0px;
 }
 
+.loginButton{
+    background-color: rgb(224, 13, 13);
+    color:white;
+    border-radius: 7%;
+    padding: 0.5% 1%;
+    border-width: 0px;
+}
+
+.logoutButton{
+    background-color: rgb(224, 13, 13);
+    color:white;
+    border-radius: 7%;
+    padding: 0.5% 1%;
+    border-width: 0px;
+}
+
 .gotoChatButton{
     background-color: #270b9f;
     color:white;
@@ -28,6 +44,21 @@ button:hover{
     border-radius: 7%;
     padding: 0.5% 2%;
     border-width: 0px;
+}
+
+.loginForm{
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+    row-gap: 10px;
+    margin-bottom: 10px
+}
+
+.loginFormLabel{
+    display: flex;
+    flex-direction: column;
+    width:100%;
+    font-weight: bold;
 }
 
 .postProductButton{

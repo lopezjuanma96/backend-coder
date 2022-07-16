@@ -88,4 +88,7 @@ Para usarlo local se isntala y ejecuta en shell desde donde hay algunos comandos
 se puede controlar con un modulo redis instalable por npm.
 Para usarlo en Windows se requiere un shell de Linux encima, ver instrucciones en la documentacion.
 Tiene ademas una version remota (cloud) llamada RedisLab, al que también se puede conectar por el modulo npm
+
+-connect-mongo.js
+paquete que sirve para gestionar sesiones con mongodb y mongoAtlas. FirebaseAuth también es una posibilidad.
 */

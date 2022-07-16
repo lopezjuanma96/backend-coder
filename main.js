@@ -3,7 +3,6 @@
 /////////////////////////
 import { prodDAO as prod, chatDAO as messages } from './DAOSelector.js';
 import { log as msgSchema } from './utils/norms/msgSchema.js'
-import { inspect } from 'util'
 import { normalize, denormalize } from 'normalizr';
 
 import express from 'express'
@@ -14,6 +13,12 @@ import { engine } from 'express-handlebars';
 
 import { Server as IOServer } from 'socket.io';
 import { Server as HttpServer } from 'http';
+
+import cookieParser from 'cookie-parser';
+import session from 'express-session';
+import mongoStore from 'connect-mongo';
+
+import { checkUser } from './utils/mws.js';
 
 ///////////////////////
 //// SETUP
@@ -35,11 +40,24 @@ app.engine('hbs', engine({
 app.set('view engine', 'hbs');
 app.set('views', './views');
 
-const server = http.listen(PORT, () => {console.log(`Servidor abierto en puerto ${PORT}`)})
+const server = http.listen(PORT, () => {console.log(`Servidor abierto en http://localhost:${PORT}`)})
 
 app.on('error', (err) => {console.log(`Error en la carga del servidor:\n${err}`)})
 app.use(express.static('./public'));
 app.use(express.static('./views'));
+
+app.use(cookieParser());
+
+app.use(session({
+    store: mongoStore.create( { mongoUrl: 'mongodb+srv://zagador123:446032@cluster0.snysn.mongodb.net/myFirstDatabase?retryWrites=true&w=majority',
+                                useNewUrlParser: true,
+                                useUnifiedTopology: true
+    }),
+    secret: 'secreto',
+    resave: false,
+    saveUninitialized: false,
+    cookie : { maxAge : 60000 }
+}));
 
 //////////////////////////////////////
 ////// PRODUCT REQUESTS
@@ -57,8 +75,35 @@ app.use('/api/carrito', routerCart);
 ////// CHAT REQUESTS
 //////////////////////////////////////
 
-app.get('/api/chat', (req, res) => {
-    res.render('chat');
+app.get('/api/chat', checkUser, (req, res) => {
+    const userData = {...req.session};
+    delete userData.cookie;
+    res.render('chat', { userData });
+})
+
+//////////////////////////////////////
+////// LOGIN REQUESTS
+//////////////////////////////////////
+
+app.post('/api/login', (req, res) => {
+    const logObj = req.body;
+    Object.keys(logObj).forEach((k) => req.session[k] = req.body[k]);
+    res.redirect('/api/home')
+})
+
+app.get('/api/logout', (req, res) => {
+    req.session.destroy(err => {
+        if(err){
+            res.status(400).send( {errorOn: "logout", log: err} );
+        }
+        res.status(200).redirect("/");
+    });
+})
+
+app.get('/api/home', checkUser, (req, res) => {
+    const userData = {...req.session};
+    delete userData.cookie;
+    res.status(200).render("home",  { userData });
 })
 
 //////////////////////////////////////
@@ -68,6 +113,7 @@ app.get('/api/chat', (req, res) => {
 app.use((req, res, next) => {
     res.status(404).send(JSON.stringify({ error : -2, descripcion: `ruta ${req.url} metodo ${req.method} no implementada`}))
 })
+
 
 ///////////////////////////////////
 ////// WEBSOCKET

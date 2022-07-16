@@ -13,7 +13,14 @@ export const mwSearchId = (req, res, next) => {
     }
 }
 
-export const checkUser = (req, res, next) => {
+export const checkUser = (req, res, next) => {    
+    if (req.session.userName) {
+        next();
+    } else {
+        res.redirect("/")
+    }
+    
+    /* User permissions validation
     const userName = localStorage.getItem('userName')
     console.log(`Leyendo usuario ${userName}`)
     if(userName){
@@ -26,4 +33,5 @@ export const checkUser = (req, res, next) => {
             req.redirect("/");
         }
     }
+    */
 }

@@ -5,11 +5,15 @@ import { mwSearchId, checkUser } from "../mws.js";
 
 const routerProd = new Router();
 
+routerProd.use(checkUser);
+
 routerProd.get('/', mwSearchId, (req, res) => {
     const id = res.locals.id;
+    const userData = {...req.session};
+    delete userData.cookie;
     if(isNaN(id)){
         prod.getAll()
-        .then((allProducts) => res.render('main', {data:allProducts, dataExist:allProducts?allProducts.length>0:false}))
+        .then((allProducts) => res.render('main', {data:allProducts, dataExist:allProducts?allProducts.length>0:false, userData}))
         .catch((e) => console.log(e));
     } else {
         try{
@@ -23,9 +27,11 @@ routerProd.get('/', mwSearchId, (req, res) => {
 })
 
 routerProd.get('/test', (req, res) => {
+    const userData = {...req.session};
+    delete userData.cookie;
     const iterations = req.query.number || 5;
     const allProducts = productFaker(iterations);
-    res.render('main', {data:allProducts, dataExist:allProducts?allProducts.length>0:false})
+    res.render('main', {data:allProducts, dataExist:allProducts?allProducts.length>0:false, userData})
 })
 
 routerProd.post('/', (req, res) => {

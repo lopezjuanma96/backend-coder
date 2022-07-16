@@ -10,10 +10,17 @@
     <title>Productos</title>
     <script src="/socket.io/socket.io.js"></script>
     <script>var exports = {};</script> <!--because the normalizr script raise Uncaught error: exports is not defined-->
-    <script src="https://cdn.jsdelivr.net/npm/normalizr@3.6.2/dist/normalizr.browser.min.js"></script> 
+    <script src="https://cdn.jsdelivr.net/npm/normalizr@3.6.2/dist/normalizr.browser.min.js"></script>
 </head>
 
 <body>
+    <span hidden>
+        <p class="userNameInput">{{userData.userName}}</p>
+        <p class="userSurnameInput">{{userData.userSurname}}</p>
+        <p class="userEmailInput">{{userData.userEmail}}</p>
+        <p class="userAgeInput">{{userData.userAge}}</p>
+        <p class="userAliasInput">{{userData.userAlias}}</p>
+    </span>
     {{{body}}}
     <script src="../../logic.js"></script>
 </body>

@@ -11,16 +11,33 @@
     <script src="https://cdn.jsdelivr.net/npm/normalizr@3.6.2/dist/normalizr.browser.min.js"></script> 
 </head>
 <body>
-    <h2 class="mainTitle">Bienvenido a Nuestro Shop!</h2>
-    Email: <input class="userEmailInput">
-    Nombre: <input class="userNameInput">
-    Apellido: <input class="userSurnameInput">
-    Edad: <input class="userAgeInput">
-    Alias: <input class="userAliasInput">
-    <br>
-    <br>
-    <a href="./api/productos"><button class="gotoProductsButton">Ir a Productos</button></a>
-    <a href="./api/chat"><button class="gotoChatButton">Chatear</button></a>
+    <section class="loggedOutView">
+        <h2 class="mainTitle">Bienvenido a Nuestro Shop!</h2>
+        <form class="loginForm">
+            <label class="loginFormLabel userEmailLabel">Email:
+            <input name="userEmail" class="userEmailInput">
+            </label>
+
+            <label class="loginFormLabel userNameLabel">Nombre:
+            <input name="userName" class="userNameInput">
+            </label>
+
+            <label class="loginFormLabel userSurnameLabel">Apellido:
+            <input name="userSurname" class="userSurnameInput">
+            </label>
+
+            <label class="loginFormLabel userAgeLabel">Edad:
+            <input name="userAge" class="userAgeInput">
+            </label>
+
+            <label class="loginFormLabel userAliasLabel">Alias:
+            <input name="userAlias" class="userAliasInput">
+            </label>
+
+            <button class="loginButton" type="submit" formaction="/api/login" formmethod="post">Ingresar</button>
+        </form>
+    </section>
+
     <script src="logic.js"></script>
 </body>
 </html>

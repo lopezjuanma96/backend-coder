@@ -1,5 +1,4 @@
 import { cartDAO as cart, prodDAO as prod } from "../../DAOSelector.js";
-
 import { Router } from "express";
 
 const routerCart = new Router();
