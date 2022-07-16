@@ -11,7 +11,7 @@ routerProd.get('/', mwSearchId, (req, res) => {
     const id = res.locals.id;
     if(isNaN(id)){
         prod.getAll()
-        .then((allProducts) => res.render('main', {data:allProducts, dataExist:allProducts?allProducts.length>0:false}))
+        .then((allProducts) => res.render('main', {data:allProducts, dataExist:allProducts?allProducts.length>0:false, userName:req.session.userName}))
         .catch((e) => console.log(e));
     } else {
         try{
@@ -27,7 +27,7 @@ routerProd.get('/', mwSearchId, (req, res) => {
 routerProd.get('/test', (req, res) => {
     const iterations = req.query.number || 5;
     const allProducts = productFaker(iterations);
-    res.render('main', {data:allProducts, dataExist:allProducts?allProducts.length>0:false})
+    res.render('main', {data:allProducts, dataExist:allProducts?allProducts.length>0:false, userName:req.session.userName})
 })
 
 routerProd.post('/', (req, res) => {

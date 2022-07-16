@@ -1,10 +1,7 @@
 import { cartDAO as cart, prodDAO as prod } from "../../DAOSelector.js";
-import { checkUser } from "../mws.js";
 import { Router } from "express";
 
 const routerCart = new Router();
-
-routerCart.use(checkUser);
 
 routerCart.post('/', (req, res) => {
     const newId = cart.save({productos: []});  //i dont know why this is returning a promise.

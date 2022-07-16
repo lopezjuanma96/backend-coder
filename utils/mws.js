@@ -13,14 +13,11 @@ export const mwSearchId = (req, res, next) => {
     }
 }
 
-export const checkUser = (req, res, next) => {
-    if (!req.sessions) {next()} //if sessions is not implemented, we won't check user
-    
-    if (req.sessions.userName) {
-        //HERE: permissions validation
+export const checkUser = (req, res, next) => {    
+    if (req.session.userName) {
         next();
     } else {
-        req.sessions.userName = req.query.userName;
+        res.redirect("/")
     }
     
     /* User permissions validation

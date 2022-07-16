@@ -47,7 +47,6 @@ if(postProductButton){
 }
 
 if(chatInputButton && chatUserNamePrompt){
-    chatUserNamePrompt.innerHTML = localStorage.getItem('userName');
     chatInputButton.addEventListener('click', (e) => {
         e.preventDefault();
         //HERE: data validation
@@ -73,6 +72,7 @@ if(chatInputButton && chatUserNamePrompt){
     })
 }
 
+/*
 if(userNameInput){
     
     userEmailInput.value = localStorage.getItem('userEmail');
@@ -101,3 +101,4 @@ if(userNameInput){
         console.log(localStorage.getItem('userAlias'));
     })
 }
+*/

@@ -18,6 +18,8 @@ import cookieParser from 'cookie-parser';
 import session from 'express-session';
 import mongoStore from 'connect-mongo';
 
+import { checkUser } from './utils/mws.js';
+
 ///////////////////////
 //// SETUP
 ///////////////////////
@@ -38,7 +40,7 @@ app.engine('hbs', engine({
 app.set('view engine', 'hbs');
 app.set('views', './views');
 
-const server = http.listen(PORT, () => {console.log(`Servidor abierto en puerto ${PORT}`)})
+const server = http.listen(PORT, () => {console.log(`Servidor abierto en http://localhost:${PORT}`)})
 
 app.on('error', (err) => {console.log(`Error en la carga del servidor:\n${err}`)})
 app.use(express.static('./public'));
@@ -53,7 +55,8 @@ app.use(session({
     }),
     secret: 'secreto',
     resave: false,
-    saveUninitialized: false
+    saveUninitialized: false,
+    cookie : { maxAge : 60000 }
 }));
 
 //////////////////////////////////////
@@ -72,8 +75,8 @@ app.use('/api/carrito', routerCart);
 ////// CHAT REQUESTS
 //////////////////////////////////////
 
-app.get('/api/chat', (req, res) => {
-    res.render('chat');
+app.get('/api/chat', checkUser, (req, res) => {
+    res.render('chat', { userName: req.session.userName });
 })
 
 //////////////////////////////////////
@@ -83,7 +86,20 @@ app.get('/api/chat', (req, res) => {
 app.post('/api/login', (req, res) => {
     const logObj = req.body;
     Object.keys(logObj).forEach((k) => req.session[k] = req.body[k]);
-    res.status(200).redirect("/");
+    res.redirect('/api/home')
+})
+
+app.get('/api/logout', (req, res) => {
+    req.session.destroy(err => {
+        if(err){
+            res.status(400).send( {errorOn: "logout", log: err} );
+        }
+        res.status(200).redirect("/");
+    });
+})
+
+app.get('/api/home', checkUser, (req, res) => {
+    res.status(200).render("home",  { userName: req.session.userName });
 })
 
 //////////////////////////////////////
