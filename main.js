@@ -76,7 +76,9 @@ app.use('/api/carrito', routerCart);
 //////////////////////////////////////
 
 app.get('/api/chat', checkUser, (req, res) => {
-    res.render('chat', { userName: req.session.userName });
+    const userData = {...req.session};
+    delete userData.cookie;
+    res.render('chat', { userData });
 })
 
 //////////////////////////////////////
@@ -99,7 +101,9 @@ app.get('/api/logout', (req, res) => {
 })
 
 app.get('/api/home', checkUser, (req, res) => {
-    res.status(200).render("home",  { userName: req.session.userName });
+    const userData = {...req.session};
+    delete userData.cookie;
+    res.status(200).render("home",  { userData });
 })
 
 //////////////////////////////////////
