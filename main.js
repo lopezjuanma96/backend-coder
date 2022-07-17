@@ -25,7 +25,8 @@ import mongoStore from 'connect-mongo';
 import { checkUser } from './utils/mws.js';
 
 import yargsMod from 'yargs/yargs';
-import { exec } from 'child_process';
+import { fork } from 'child_process';
+import { compute } from './utils/randomChild.js';
 
 ///////////////////////
 //// SETUP
@@ -120,8 +121,23 @@ app.get('/info', (req, res) => {
         rss: process.memoryUsage().heapTotal,
         path: process.execPath,
         dir: process.cwd(), 
-        id: exec.id,
+        id: process.pid,
     })
+})
+
+app.get('/api/random', (req, res) => {
+    const nums = parseInt(req.query.nums) || 100000000;
+    const max = parseInt(req.query.max) || 1000;
+    
+    if(Boolean(req.query.fork)){
+        const compute = fork('./utils/randomChild.js');
+        compute.send(`start,${nums},${max}`);
+        compute.on('message', (msg) => {
+            res.status(200).json(msg);
+        })
+    } else {
+        res.status(200).json(compute(nums, max));
+    }
 })
 
 //////////////////////////////////////
