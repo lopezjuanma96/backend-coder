@@ -60,6 +60,10 @@ app.use(session({
     cookie : { maxAge : 60000 }
 }));
 
+app.get('/home', (req, res) => {
+    res.render('home');
+})
+
 //////////////////////////////////////
 ////// PRODUCT REQUESTS
 //////////////////////////////////////

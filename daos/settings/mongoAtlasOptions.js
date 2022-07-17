@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 
+///////////PRODUCTS/////////////
 const productsCollection = 'productos'
 const productsSchema = new mongoose.Schema({
     title: {type: String, required: true, max: 100},
@@ -9,6 +10,7 @@ const productsSchema = new mongoose.Schema({
     timestamp: {type: Number, required: true}
 })
 
+///////////CART/////////////
 const cartCollection = 'carrito'
 const cartProductSchema = new mongoose.Schema({
     title: {type: String, required: true, max: 100},
@@ -22,6 +24,7 @@ const cartSchema = new mongoose.Schema({
     timestamp: {type: Number, required: true}
 })
 
+///////////CHAT/////////////
 const chatCollection = 'chat'
 const chatSchema = new mongoose.Schema({
     id: {type: Number, required: true},
@@ -31,7 +34,20 @@ const chatSchema = new mongoose.Schema({
     date: {type: Date}
 })
 
+///////////USERS/////////////
+
+const usersCollection = 'usuarios'
+const usersSchema = new mongoose.Schema({
+    id: {type: String, required: true, max: 50}, //id will be username to use Container.getById()
+    name: {type: String, required: true, max: 50},
+    surname: {type: String, max: 50},
+    age: {type: Number},
+    email: {type: String, required: true, max: 50},
+    pass: {type: String, required: true, max: 100}
+})
+
 export const productsModel = mongoose.model(productsCollection, productsSchema)
 export const cartModel = mongoose.model(cartCollection, cartSchema)
 export const chatModel = mongoose.model(chatCollection, chatSchema)
+export const usersModel = mongoose.model(usersCollection, usersSchema)
 export const URL = "mongodb+srv://zagador123:446032@cluster0.snysn.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
