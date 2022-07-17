@@ -1,0 +1,28 @@
+<form class="registerForm">
+    <label class="registerFormLabel userEmailLabel">Email:
+    <input name="email" class="userEmailInput">
+    </label>
+
+    <label class="registerFormLabel userNameLabel">Nombre:
+    <input name="name" class="userNameInput">
+    </label>
+
+    <label class="registerFormLabel userSurnameLabel">Apellido:
+    <input name="surname" class="userSurnameInput">
+    </label>
+
+    <label class="registerFormLabel userAgeLabel">Edad:
+    <input name="age" class="userAgeInput">
+    </label>
+
+    <label class="registerFormLabel userAliasLabel">Alias:
+    <input name="alias" class="userAliasInput">
+    </label>
+    
+    <label class="registerFormLabel userPasswordLabel">Password:
+    <input type="password" name="pass" class="userPasswordInput">
+    </label>
+
+    <button class="registerButton" type="submit" formaction="/api/users/register" formmethod="post">Registrarse</button>
+</form>
+<a href="/" class="goBackButton"><button class="goBackButton">Volver</button></a>

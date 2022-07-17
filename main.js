@@ -8,6 +8,7 @@ import { normalize, denormalize } from 'normalizr';
 import express from 'express'
 import routerProd from './utils/routes/productRoute.js';
 import routerCart from './utils/routes/cartRoute.js';
+import routerLogin from './utils/routes/loginRoute.js';
 
 import { engine } from 'express-handlebars';
 
@@ -59,6 +60,12 @@ app.use(session({
     cookie : { maxAge : 60000 }
 }));
 
+app.get('/api/home', checkUser, (req, res) => {
+    const userData = {...req.session};
+    delete userData.cookie;
+    res.render('home', { userData });
+})
+
 //////////////////////////////////////
 ////// PRODUCT REQUESTS
 //////////////////////////////////////
@@ -85,26 +92,7 @@ app.get('/api/chat', checkUser, (req, res) => {
 ////// LOGIN REQUESTS
 //////////////////////////////////////
 
-app.post('/api/login', (req, res) => {
-    const logObj = req.body;
-    Object.keys(logObj).forEach((k) => req.session[k] = req.body[k]);
-    res.redirect('/api/home')
-})
-
-app.get('/api/logout', (req, res) => {
-    req.session.destroy(err => {
-        if(err){
-            res.status(400).send( {errorOn: "logout", log: err} );
-        }
-        res.status(200).redirect("/");
-    });
-})
-
-app.get('/api/home', checkUser, (req, res) => {
-    const userData = {...req.session};
-    delete userData.cookie;
-    res.status(200).render("home",  { userData });
-})
+app.use('/api/users', routerLogin);
 
 //////////////////////////////////////
 ////// GLOBAL MIDDLEWARES

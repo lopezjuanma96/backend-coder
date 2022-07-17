@@ -11,33 +11,9 @@
     <script src="https://cdn.jsdelivr.net/npm/normalizr@3.6.2/dist/normalizr.browser.min.js"></script> 
 </head>
 <body>
-    <section class="loggedOutView">
-        <h2 class="mainTitle">Bienvenido a Nuestro Shop!</h2>
-        <form class="loginForm">
-            <label class="loginFormLabel userEmailLabel">Email:
-            <input name="userEmail" class="userEmailInput">
-            </label>
-
-            <label class="loginFormLabel userNameLabel">Nombre:
-            <input name="userName" class="userNameInput">
-            </label>
-
-            <label class="loginFormLabel userSurnameLabel">Apellido:
-            <input name="userSurname" class="userSurnameInput">
-            </label>
-
-            <label class="loginFormLabel userAgeLabel">Edad:
-            <input name="userAge" class="userAgeInput">
-            </label>
-
-            <label class="loginFormLabel userAliasLabel">Alias:
-            <input name="userAlias" class="userAliasInput">
-            </label>
-
-            <button class="loginButton" type="submit" formaction="/api/login" formmethod="post">Ingresar</button>
-        </form>
-    </section>
-
+    <h2 class="mainTitle">Bienvenido a Nuestro Shop!</h2>
+    <a href="/api/users/login"><button class="loginButton">Ingresar</button></a>
+    <a href="/api/users/register"><button class="registerButton">Registrarse</button></a>
     <script src="logic.js"></script>
 </body>
 </html>
