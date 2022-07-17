@@ -21,6 +21,7 @@ export async function loginUser(data){
         if(checkPassword(data.pass, userExists.pass)){
             userExists.alias = userExists.id;
             delete userExists.id;
+            delete userExists.pass;
             return userExists;
         } else {
             throw new Error("Invalid Credentials");

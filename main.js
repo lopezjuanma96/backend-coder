@@ -61,7 +61,9 @@ app.use(session({
 }));
 
 app.get('/api/home', checkUser, (req, res) => {
-    res.render('home');
+    const userData = {...req.session};
+    delete userData.cookie;
+    res.render('home', { userData });
 })
 
 //////////////////////////////////////

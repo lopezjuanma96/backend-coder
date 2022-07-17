@@ -15,8 +15,7 @@ routerLogin.post('/login', (req, res) => {
     const logObj = req.body;
     loginUser(logObj)
     .then((userData) => {
-        delete userData.pass; //we wont keep the password on the session
-        Object.keys(userData).forEach((k) => req.session[k] = req.body[k]);
+        Object.keys(userData).forEach((k) => req.session[k] = userData[k]);
         res.render('loginSuccess', {userAlias: userData.alias});
     })
     .catch((e) => res.render('loginFail', {ERROR: e}))
