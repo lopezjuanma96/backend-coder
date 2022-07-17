@@ -30,6 +30,14 @@ button:hover{
     border-width: 0px;
 }
 
+.registerButton{
+    background-color: rgb(255, 187, 61);
+    color:white;
+    border-radius: 7%;
+    padding: 0.5% 1%;
+    border-width: 0px;
+}
+
 .gotoChatButton{
     background-color: #270b9f;
     color:white;
@@ -55,6 +63,21 @@ button:hover{
 }
 
 .loginFormLabel{
+    display: flex;
+    flex-direction: column;
+    width:100%;
+    font-weight: bold;
+}
+
+.registerForm{
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+    row-gap: 10px;
+    margin-bottom: 10px
+}
+
+.registerFormLabel{
     display: flex;
     flex-direction: column;
     width:100%;

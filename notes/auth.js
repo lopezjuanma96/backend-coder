@@ -17,4 +17,7 @@ uno con un paquete instalable distinto:
 IMPORTANTE: el uso de passport, o de cualquier metodo de autorizacion/autenticacion, no descarta al uso de cookies y sesiones,
 digamos que uno te permite registrarte y loguearte/desloguearte, el otro mantiene tu sesion y datos guardados una vez hecho el login.
 
+JWT.js -> Access Tokens
+La idea es que una vez que me loguee o registre el servidor me de un access token que yo pueda usar para ingresar sin usar el usuario y contra cada vez.
+
 */
