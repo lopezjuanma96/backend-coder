@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { prodDAO as prod } from "../../DAOSelector.js";
+import { prodDAO as prod } from "../../utils/DAOSelector.js";
 import { productFaker } from "../fakerGen.js";
 import { mwSearchId, checkUser } from "../mws.js";
 

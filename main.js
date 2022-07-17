@@ -1,7 +1,10 @@
 /////////////////////////
 //// IMPORTS
 /////////////////////////
-import { prodDAO as prod, chatDAO as messages } from './DAOSelector.js';
+import {} from 'dotenv/config';
+//with import it has to be done like this because importing to a variable and then running config does not "translate" to other files, since imports are done before running functions. SHOULD SEE HOW TO PASS PARAMS (for example the .env path)
+
+import { prodDAO as prod, chatDAO as messages } from './utils/DAOSelector.js';
 import { log as msgSchema } from './utils/norms/msgSchema.js'
 import { normalize, denormalize } from 'normalizr';
 
@@ -21,13 +24,25 @@ import mongoStore from 'connect-mongo';
 
 import { checkUser } from './utils/mws.js';
 
+import yargsMod from 'yargs/yargs';
+import { fork } from 'child_process';
+import { compute } from './utils/randomChild.js';
+
 ///////////////////////
 //// SETUP
 ///////////////////////
 const app = express();
 const http = new HttpServer(app);
 const io = new IOServer(http);
-const PORT = 8080;
+const yargs = yargsMod(process.argv)
+            .alias({ p: 'PORT', port: 'PORT' })
+            .array('PORT')
+            .default({ port: 8080 });
+const PORT = yargs.argv.PORT[0];
+
+process.on('uncaughtException', (err) =>{
+    console.log(`Uncaught Exception raised by: ${err}`) //INSTEAD OF CONSOLE LOGGING, THIS CAN BE LOGGED ON FILES SO WHEN TESTING RUNNING THE SCRIPT AND GOING TO THE FILE TO GET A "REPORT"
+})
 
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
@@ -93,6 +108,37 @@ app.get('/api/chat', checkUser, (req, res) => {
 //////////////////////////////////////
 
 app.use('/api/users', routerLogin);
+
+//////////////////////////////////////
+////// INFO REQUESTS
+//////////////////////////////////////
+
+app.get('/info', (req, res) => {
+    res.render('info', {
+        args: JSON.stringify(yargs.argv),
+        os: process.platform,
+        version: process.version,
+        rss: process.memoryUsage().heapTotal,
+        path: process.execPath,
+        dir: process.cwd(), 
+        id: process.pid,
+    })
+})
+
+app.get('/api/random', (req, res) => {
+    const nums = parseInt(req.query.nums) || 100000000;
+    const max = parseInt(req.query.max) || 1000;
+    
+    if(Boolean(req.query.fork)){
+        const compute = fork('./utils/randomChild.js');
+        compute.send(`start,${nums},${max}`);
+        compute.on('message', (msg) => {
+            res.status(200).json(msg);
+        })
+    } else {
+        res.status(200).json(compute(nums, max));
+    }
+})
 
 //////////////////////////////////////
 ////// GLOBAL MIDDLEWARES
