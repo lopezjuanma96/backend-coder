@@ -1,11 +1,11 @@
 import { Router } from "express";
-import { createNewUser } from "../loginMethods.js";
+import { createNewUser, loginUser } from "../loginMethods.js";
 
 const routerLogin = new Router();
 
 /////////LOGIN//////////
 routerLogin.get('/login', (req, res) => {
-    if (false){
+    if (false) { //HERE add jwt token
         res.redirect('api/users/loginOk');
     }
     res.status(200).render('login');
@@ -13,10 +13,13 @@ routerLogin.get('/login', (req, res) => {
 
 routerLogin.post('/login', (req, res) => {
     const logObj = req.body;
-    //AUTHENTICATE
-    //GET DATA
-    Object.keys(logObj).forEach((k) => req.session[k] = req.body[k]);
-    res.redirect('api/users/loginOk');
+    loginUser(logObj)
+    .then((userData) => {
+        delete userData.pass; //we wont keep the password on the session
+        Object.keys(userData).forEach((k) => req.session[k] = req.body[k]);
+        res.render('loginSuccess', {userAlias: userData.alias});
+    })
+    .catch((e) => res.render('loginFail', {ERROR: e}))
 });
 
 /////////LOGOUT//////////

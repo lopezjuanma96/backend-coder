@@ -14,7 +14,7 @@ export const mwSearchId = (req, res, next) => {
 }
 
 export const checkUser = (req, res, next) => {    
-    if (req.session.userName) {
+    if (req.session.alias) {
         next();
     } else {
         res.redirect("/")

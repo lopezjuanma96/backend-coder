@@ -60,7 +60,7 @@ app.use(session({
     cookie : { maxAge : 60000 }
 }));
 
-app.get('/home', (req, res) => {
+app.get('/api/home', checkUser, (req, res) => {
     res.render('home');
 })
 
