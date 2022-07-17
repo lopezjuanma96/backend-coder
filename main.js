@@ -21,13 +21,19 @@ import mongoStore from 'connect-mongo';
 
 import { checkUser } from './utils/mws.js';
 
+import yargsMod from 'yargs/yargs';
+
 ///////////////////////
 //// SETUP
 ///////////////////////
 const app = express();
 const http = new HttpServer(app);
 const io = new IOServer(http);
-const PORT = 8080;
+const yargs = yargsMod(process.argv);
+const PORT = yargs
+            .alias({ p: 'PORT', port: 'PORT' })
+            .array('PORT')
+            .default({ port: 8080 }).argv.PORT[0];
 
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
