@@ -47,26 +47,33 @@ if(postProductButton){
 }
 
 if(chatInputButton){
-    chatInputButton.addEventListener('click', (e) => {
+    const sendMsg = (e) => {
         e.preventDefault();
         //HERE: data validation
         const sendObject = { user: {} }
         sendObject.user.name = userNameInput.innerHTML;
         sendObject.user.surname = userSurnameInput.innerHTML; //NOT THE BEST WAY TO DO THIS; SHOULD LOOK INTO HANDLEBARS HELPERS
-        sendObject.user.id = userEmailInput.innerHTML;
+        sendObject.user.email = userEmailInput.innerHTML;
         sendObject.user.age = userAgeInput.innerHTML;
-        sendObject.user.alias = userAliasInput.innerHTML;;
+        sendObject.user.id = userAliasInput.innerHTML;
         sendObject.user.avatar = 'temp.png';
         sendObject.text = chatInput.value;
         sendObject.date = new Date();
+        chatInput.value = "";
         //console.log(sendObject);
         socket.emit("chatMessage", sendObject);
+    }
+    chatInputButton.addEventListener('click', sendMsg);
+    chatInput.addEventListener('keypress', (e) => {
+        if(e.key === 'Enter'){ sendMsg(e) }
     })
     socket.on("messageList", (data) => {
         if (data.length > 0){
+            console.log(data[0].entities)
             const denormData = normalizr.denormalize(data[0].result, chatSchema, data[0].entities);
+            console.log(denormData);
             const compRate = (100*JSON.stringify(data[0].entities).length/JSON.stringify(denormData).length).toFixed(2);
-            const chatLogText = denormData.messages.map((elem) => `<p><b>${elem.user.alias}:</b> ${elem.text} \t [${elem.date}]`)
+            const chatLogText = denormData.messages.map((elem) => `<p><b>${elem.user.id}:</b> ${elem.text} \t [${elem.date}]`)
             chatLog.innerHTML = `<h1>Compression Rate: ${compRate}%</h1>` + chatLogText.join('<br>')
         }
     })
