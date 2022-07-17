@@ -10,7 +10,7 @@ export default class Contenedor {
     constructor(collection) {
         admin.initializeApp({
             credential: admin.credential.cert(serviceAccount),
-            databaseURL: 'https://react-backend-67669.firebaseio.com'
+            databaseURL: process.env.FIREBASEURL
         });
         this.db = admin.firestore();
         this.query = this.db.collection(collection);

@@ -50,4 +50,4 @@ export const productsModel = mongoose.model(productsCollection, productsSchema)
 export const cartModel = mongoose.model(cartCollection, cartSchema)
 export const chatModel = mongoose.model(chatCollection, chatSchema)
 export const usersModel = mongoose.model(usersCollection, usersSchema)
-export const URL = "mongodb+srv://zagador123:446032@cluster0.snysn.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
+export const URL = process.env.MONGOATLASURL

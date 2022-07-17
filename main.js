@@ -1,7 +1,8 @@
 /////////////////////////
 //// IMPORTS
 /////////////////////////
-import {} from 'dotenv/config'; //with import it has to be done like this because importing to a variable and then running config does not "translate" to other files, since imports are done before running functions.
+import {} from 'dotenv/config';
+//with import it has to be done like this because importing to a variable and then running config does not "translate" to other files, since imports are done before running functions. SHOULD SEE HOW TO PASS PARAMS (for example the .env path)
 
 import { prodDAO as prod, chatDAO as messages } from './utils/DAOSelector.js';
 import { log as msgSchema } from './utils/norms/msgSchema.js'
