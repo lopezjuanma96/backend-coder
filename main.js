@@ -25,6 +25,7 @@ import mongoStore from 'connect-mongo';
 import { checkUser } from './utils/mws.js';
 
 import yargsMod from 'yargs/yargs';
+import { exec } from 'child_process';
 
 ///////////////////////
 //// SETUP
@@ -32,11 +33,15 @@ import yargsMod from 'yargs/yargs';
 const app = express();
 const http = new HttpServer(app);
 const io = new IOServer(http);
-const yargs = yargsMod(process.argv);
-const PORT = yargs
+const yargs = yargsMod(process.argv)
             .alias({ p: 'PORT', port: 'PORT' })
             .array('PORT')
-            .default({ port: 8080 }).argv.PORT[0];
+            .default({ port: 8080 });
+const PORT = yargs.argv.PORT[0];
+
+process.on('uncaughtException', (err) =>{
+    console.log(`Uncaught Exception raised by: ${err}`) //INSTEAD OF CONSOLE LOGGING, THIS CAN BE LOGGED ON FILES SO WHEN TESTING RUNNING THE SCRIPT AND GOING TO THE FILE TO GET A "REPORT"
+})
 
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
@@ -102,6 +107,22 @@ app.get('/api/chat', checkUser, (req, res) => {
 //////////////////////////////////////
 
 app.use('/api/users', routerLogin);
+
+//////////////////////////////////////
+////// INFO REQUESTS
+//////////////////////////////////////
+
+app.get('/info', (req, res) => {
+    res.render('info', {
+        args: JSON.stringify(yargs.argv),
+        os: process.platform,
+        version: process.version,
+        rss: process.memoryUsage().heapTotal,
+        path: process.execPath,
+        dir: process.cwd(), 
+        id: exec.id,
+    })
+})
 
 //////////////////////////////////////
 ////// GLOBAL MIDDLEWARES
