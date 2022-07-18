@@ -25,8 +25,11 @@ import mongoStore from 'connect-mongo';
 import { checkUser } from './utils/mws.js';
 
 import yargsMod from 'yargs/yargs';
+
 import { fork } from 'child_process';
 import { compute } from './utils/randomChild.js';
+import cluster from 'cluster';
+import os from 'os';
 
 ///////////////////////
 //// SETUP
@@ -35,10 +38,14 @@ const app = express();
 const http = new HttpServer(app);
 const io = new IOServer(http);
 const yargs = yargsMod(process.argv)
-            .alias({ p: 'PORT', port: 'PORT' })
+            .alias({ p: 'PORT', port: 'PORT', m: 'MODE', mode: 'MODE' })
             .array('PORT')
-            .default({ port: 8080 });
+            .array('MODE')
+            .default({ PORT: 8080, MODE: 'FORK'});
 const PORT = yargs.argv.PORT[0];
+const MODE = yargs.argv.MODE[0];
+const CPUS = os.cpus().length;
+const PID = process.pid;
 
 process.on('uncaughtException', (err) =>{
     console.log(`Uncaught Exception raised by: ${err}`) //INSTEAD OF CONSOLE LOGGING, THIS CAN BE LOGGED ON FILES SO WHEN TESTING RUNNING THE SCRIPT AND GOING TO THE FILE TO GET A "REPORT"
@@ -56,7 +63,20 @@ app.engine('hbs', engine({
 app.set('view engine', 'hbs');
 app.set('views', './views');
 
-const server = http.listen(PORT, () => {console.log(`Servidor abierto en http://localhost:${PORT}`)})
+if (MODE==="CLUSTER" && cluster.isPrimary){
+    console.log(`Server has ${CPUS} cores`);
+    console.log(`Master has PID: ${PID}`)
+    for(let i=0; i<CPUS; i++){
+        cluster.fork();
+    }
+
+    cluster.on('exit', (worker, code, signal) => {
+        console.log(`Worker ${worker.process.pid} died with exitcode: ${code}, restarting..`);
+        cluster.fork();
+    })
+} else {
+    const server = app.listen(PORT, () => {console.log(`Servidor ${PID} abierto en http://localhost:${PORT}`)})
+}
 
 app.on('error', (err) => {console.log(`Error en la carga del servidor:\n${err}`)})
 app.use(express.static('./public'));
