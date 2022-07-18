@@ -1,0 +1,19 @@
+entrega1:
+se crea un servidor fork en el puerto 8080 y un servidor de clusters en el 8081 con los comandos
+pm2 start main.js -p 8080 -m FORK
+pm2 start main.js -p 8081 -m CLUSTER
+
+la configuracion de nginx hace que la ruta /api/random vaya al proxy_pass randoms asignado al servidor de los clusters del puerto 8081
+y que el resto de las rutas vayan al servidor de fork del puerto 8080
+
+entrega2:
+se crea un servidor fork en el puerto 8080 y un servidor de clusters en los puertos 8082, 8083, 8084 y 8085
+pm2 start main.js -p 8080 -m FORK
+pm2 start main.js -p 8082 -m FORK
+pm2 start main.js -p 8083 -m FORK
+pm2 start main.js -p 8084 -m FORK
+pm2 start main.js -p 8085 -m FORK
+
+similar a la anterior, ahora el proxy_pass randoms distribuye la carga equitativamente entre los servidores de los puertos 8082 a 8085, y
+node_app al igual que antes al 8080. La diferencia es que el cluster de randoms no se creo por codigo en node con el paquete cluster,
+sino que se crearon como servers forks individuales que al ser getionados con nginx funcionan como un cluster
