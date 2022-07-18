@@ -6,7 +6,7 @@ const express = require('express');
 const app = express();
 const PORT = parseInt(process.argv[2]) || 8080;
     
-app.get('/', (req, res) => {
+app.get('/datos', (req, res) => {
     res.send(`Servidor en puerto ${PORT} - <b>PID ${process.pid}</b> - ${new Date().toLocaleString()}`);
 })
 
