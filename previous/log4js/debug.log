@@ -1,0 +1,8 @@
+[2022-07-19T21:52:06.882] [INFO] prod - logger set on mode PROD
+[2022-07-19T21:52:06.985] [INFO] prod - server online on mode PROD
+[2022-07-19T21:52:16.474] [WARN] prod - El usuario alcanzó una ruta no implementada
+[2022-07-19T21:52:16.610] [WARN] prod - El usuario alcanzó una ruta no implementada
+[2022-07-19T21:52:19.560] [ERROR] prod - Parámetros undefined y undefined inválidos para la suma
+[2022-07-19T21:52:19.598] [WARN] prod - El usuario alcanzó una ruta no implementada
+[2022-07-19T21:52:28.007] [INFO] prod - Parámetros 1 y 3 correctos para la suma
+[2022-07-19T21:52:28.041] [WARN] prod - El usuario alcanzó una ruta no implementada
