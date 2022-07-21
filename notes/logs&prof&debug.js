@@ -29,7 +29,9 @@ guardan los errores e impresiones de procesos en archivos o consolas pero no com
 
 Grafano y SignalFx -> recoger todos los logs de varias aplicaciones en un mismo punto para mejorar la busqueda, analisis, filtrado
 
-Log4Js (TIEEEEEMBLA)
+- Log4Js (TIEEEEEMBLA)
 
+- Winston
 
+- Pino -> más simple de configurar
 */
