@@ -30,6 +30,7 @@ import { fork } from 'child_process';
 import { compute } from './utils/randomChild.js';
 import cluster from 'cluster';
 import os from 'os';
+import compression from 'compression';
 
 ///////////////////////
 //// SETUP
@@ -133,16 +134,22 @@ app.use('/api/users', routerLogin);
 ////// INFO REQUESTS
 //////////////////////////////////////
 
+const infoObj = {
+    args: JSON.stringify(yargs.argv),
+    os: process.platform,
+    version: process.version,
+    rss: process.memoryUsage().heapTotal,
+    path: process.execPath,
+    dir: process.cwd(), 
+    id: process.pid,
+}
+
 app.get('/info', (req, res) => {
-    res.render('info', {
-        args: JSON.stringify(yargs.argv),
-        os: process.platform,
-        version: process.version,
-        rss: process.memoryUsage().heapTotal,
-        path: process.execPath,
-        dir: process.cwd(), 
-        id: process.pid,
-    })
+    res.render('info', infoObj)
+})
+
+app.get('/infozip', compression(), (req, res) => {
+    res.render('info', infoObj)
 })
 
 app.get('/api/random', (req, res) => {
