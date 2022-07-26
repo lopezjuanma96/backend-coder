@@ -3,8 +3,8 @@ import winston from "winston";
 const buildProdLogger = () => {
     return winston.createLogger({
         transports: [
-            new winston.transports.File({ filename: 'warn.log', level: 'warn' }),
-            new winston.transports.File({ filename: 'error.log', level: 'error' })
+            new winston.transports.File({ filename: 'logfiles/warn.log', level: 'warn' }),
+            new winston.transports.File({ filename: 'logfiles/error.log', level: 'error' })
         ]
     })
 }
