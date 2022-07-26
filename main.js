@@ -22,7 +22,7 @@ import cookieParser from 'cookie-parser';
 import session from 'express-session';
 import mongoStore from 'connect-mongo';
 
-import { checkUser } from './utils/mws.js';
+import { checkUser, logRequest } from './utils/mws.js';
 
 import yargsMod from 'yargs/yargs';
 
@@ -31,6 +31,8 @@ import { compute } from './utils/randomChild.js';
 import cluster from 'cluster';
 import os from 'os';
 import compression from 'compression';
+
+import logger from './utils/logger.js';
 
 ///////////////////////
 //// SETUP
@@ -95,6 +97,8 @@ app.use(session({
     saveUninitialized: false,
     cookie : { maxAge : 60000 }
 }));
+
+app.use(logRequest)
 
 app.get('/api/home', checkUser, (req, res) => {
     const userData = {...req.session};
@@ -172,6 +176,7 @@ app.get('/api/random', (req, res) => {
 //////////////////////////////////////
 
 app.use((req, res, next) => {
+    logger.warn(`Invalid request type ${req.method} sent to ${req.url}`)
     res.status(404).send(JSON.stringify({ error : -2, descripcion: `ruta ${req.url} metodo ${req.method} no implementada`}))
 })
 
@@ -184,7 +189,7 @@ io.on('connection', (socket) => {
     console.log('usuario connectado');
     messages.getAll()
     .then((messageList) => socket.emit('messageList', messageList))
-    .catch((e) => console.log(e));
+    .catch((e) => logger.error(e));
     //socket.emit('message', 'Este es un mensaje emitido por el socket del servidor'); //CUIDADO, es importante nombrar bien la variable (en este caso 'message') porque si no respeto el nombre del lado del cliente no va a andar
     socket.on('chatMessage', (data) => {
         messages.getAll()
@@ -195,7 +200,7 @@ io.on('connection', (socket) => {
                 .then(() => {
                     messages.getAll()
                     .then((messageList) => io.sockets.emit('messageList', messageList))
-                    .catch((e) => console.log(e));
+                    .catch((e) => logger.error(e));
                 })
             } else {
                 const msgObj = denormalize(messageList[0].result, msgSchema, messageList[0].entities);
@@ -205,11 +210,11 @@ io.on('connection', (socket) => {
                 .then(() => {
                     messages.getAll()
                     .then((messageList) => io.sockets.emit('messageList', messageList))
-                    .catch((e) => console.log(e));
+                    .catch((e) => logger.error(e));
                 })
             }
         })
-        .catch((e) => console.log(e)); //broadcast envío a todos los clientes conectados: io.sockets.emmit(..)
+        .catch((e) => logger.error(e)); //broadcast envío a todos los clientes conectados: io.sockets.emmit(..)
     });
     socket.on('productAdd', (data) => {
         const parsePrice = parseFloat(data.price);

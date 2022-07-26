@@ -1,3 +1,5 @@
+import logger from "./logger.js";
+
 export const mwSearchId = (req, res, next) => {
     if(Object.entries(req.query).length > 0){
         const searchId = parseFloat(req.query.id);
@@ -34,4 +36,9 @@ export const checkUser = (req, res, next) => {
         }
     }
     */
+}
+
+export const logRequest = (req, res, next) => {
+    logger.info(`Request type ${req.method} sent to ${req.url}`);
+    next();
 }
