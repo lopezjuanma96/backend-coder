@@ -2,6 +2,7 @@ import { Router } from "express";
 import { prodDAO as prod } from "../../utils/DAOSelector.js";
 import { productFaker } from "../fakerGen.js";
 import { mwSearchId, checkUser } from "../mws.js";
+import logger from "../logger.js";
 
 const routerProd = new Router();
 
@@ -14,12 +15,12 @@ routerProd.get('/', mwSearchId, (req, res) => {
     if(isNaN(id)){
         prod.getAll()
         .then((allProducts) => res.render('main', {data:allProducts, dataExist:allProducts?allProducts.length>0:false, userData}))
-        .catch((e) => console.log(e));
+        .catch((e) => logger.error(e.message));
     } else {
         try{
             prod.getById(id)
             .then((prod) => res.send(prod))
-            .catch((e) => console.log(e));
+            .catch((e) => logger.error(e.message));
         } catch (err) {
             res.status(500).send({error: "El producto no existe"})
         }
@@ -43,7 +44,7 @@ routerProd.post('/', (req, res) => {
         const newProd = {...body, price: parsePrice};
         prod.save(newProd)
         .then(() => res.redirect('/'))
-        .catch((e) => console.log(e))
+        .catch((e) => logger.error(e.message))
         .finally(prod.close());
     }
 })

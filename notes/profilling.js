@@ -7,10 +7,7 @@ cada uno de los lenguajes, curl incluido
 
 muchos navegadores tienen su profiler propio: en Chrome entrar a inspect://
 
-node tiene su propia herramienta por codigo:
-    - para hacer profiling mientras corre app: node --prof [app.js] 
-    - para revisar profiling a partir de logs: node --prof-process
-    - para generar inspect (para navegadores) mientras corre app: node --inspect [app.js]
+node tiene su propia herramienta por codigo: ver 'details.txt' en ./profilings
 
 hay paquetes de terceros que hacen profiling:
     -autocannon: para generar los prof logs, similar a artillery pero dentro del codigo
