@@ -3,6 +3,9 @@
   "type": "module",
   "version": "1.0.0",
   "description": "Repo for publishing updates and works of Coderhouse Backend Course",
+  "engines": {
+    "node": "16.x"
+  },
   "main": "dist/main.js",
   "scripts": {
     "build": "webpack",
