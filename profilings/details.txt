@@ -1,0 +1,47 @@
+Using artillery we simulated 50 concurrent users sending 20 requests to 'info' path, each with a blocking and no-blocking situation:
+
+block -> the data on the info endpoint is printed out of console.log before being sent to the frontend
+noblock -> the data on the info endpoint is NOT printed out of console.log before being sent to the frontend
+
+To do that we deployed the server on the localhost on profiling mode using: "node --prof main.js" and then simulated the requests with artilleries command:
+"artillery quick --count 20 -n 50 "http://localhost:8080/info" > "profilings/artillery/block_res.txt" ", both including and not including the console log on the
+express app setup on the info path:
+
+- With block:
+
+app.get('/info', (req, res) => {
+    console.log(infoObj);
+    res.render('info', infoObj);
+})
+
+- Without block:
+
+app.get('/info', (req, res) => {
+    res.render('info', infoObj);
+})
+
+The artillery result files (on the artillery folder) show some data to do the comparison with, but not enough for the profiling, for that we process the log files
+created by node on prof mode using the command: "node --prof-process [source.log] > [processed.txt]"
+
+what we can mainly see there are the ticks counts, which should be lower for more optimized servers, which happens as expected in our case (block has larger tick counts)
+
+Now we'll use node inspector mode, for that we run the command "node --inspect main.js" and open our browser in inspector mode (in Chrome this is chrome://inspect)
+and then open the dev tools where we can go to the Profiler tag and start the profiler while we do another "attack" to the server, this time with autocannon:
+
+The difference with autocannon is that it uses a JS file to setup and run the requests, this is the benchmark.js file inside the autocannon folder, where the most important
+part lies in:
+
+const inst = autocannon({
+        url,
+        connections: 100,
+        duration: 20
+    })
+
+where we setup the requests url, number and concurrences. Then we analyze the results on the chrome inspector, saving images of it's and autoncannon's report.
+one main difference is the table duration and number of request per second on the autocannon report, and how the log function appears on the time consuming processes
+on the browser's inspect.
+
+Finally we repeat the autocannon attacks but using 0x. 0x deploys the server similarly to node in prof mode by using the command "0x main.js" but when ending the process
+it generates a set of files that include an html with the profiling data. Those files can be found in separate folders for the block and no-block situation on the zero folder.
+One simple way to analyze 0x graphs is to consider that every red line on top of another is a parallel process sent, which means vertical spikes are many parallel processes
+that take a really short time, and thick low mountains are unparallel processes that take a long time.

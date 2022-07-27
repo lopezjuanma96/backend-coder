@@ -149,11 +149,11 @@ const infoObj = {
 }
 
 app.get('/info', (req, res) => {
-    res.render('info', infoObj)
+    res.render('info', infoObj);
 })
 
 app.get('/infozip', compression(), (req, res) => {
-    res.render('info', infoObj)
+    res.render('info', infoObj);
 })
 
 app.get('/api/random', (req, res) => {
