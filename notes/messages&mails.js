@@ -10,4 +10,5 @@ nodemailer.com/about -> doc e info
 
 Ethereal: proveído por nodemailer (o recomendado por ellos) para testear el envío de mails.
 Gmail: Requiere tener activada la autenticacion en dos pasos. Luego en contraseñas de aplicaciones generar una nueva contraseña para "Correo" en el dispositivo correspondiente. (ej: hjetevzuvfkntiwj)
+Twilio: empresa de comunicaciones, es paga, pero cuando te registras te dan 15 dolares de prueba. La pagina ofrece una demo para familiarizarse con los servicios.
 */

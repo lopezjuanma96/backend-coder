@@ -18,7 +18,12 @@ const mailOptions = {
     from: 'node.js server',
     to: TEST,
     subject: 'testing con gmail',
-    html: '<h1 style="color:blue;">Contenido de prueba <span style="color:green;">Node</span></h1>'
+    html: '<h1 style="color:blue;">Contenido de prueba <span style="color:green;">Node</span></h1>',
+    attachments: [
+        {
+            path: new URL('./path_to_image.png', import.meta.url).pathname //import.meta.url uses the url for that image, RESEARCH
+        }
+    ]
 }
 
 try {
