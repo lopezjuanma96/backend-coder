@@ -48,7 +48,7 @@ async function sendWhatsapp(dest, cart){
     })
 }
 
-async function sendMail(cart, user){
+async function sendMailCart(user, cart){
     const transporter = createTransport({
         service: 'gmail',
         port: 587,
@@ -75,6 +75,33 @@ async function sendMail(cart, user){
     })
 }
 
+async function sendMailUser(user){
+    const transporter = createTransport({
+        service: 'gmail',
+        port: 587,
+        auth: MAIL_SRC,
+        tls: {                             //from here: https://stackoverflow.com/questions/46742402/error-self-signed-certificate-in-certificate-chain-nodejs-nodemailer-express
+            rejectUnauthorized: false     //to avoid the Error: self signed certificate in certificate chain, not sure this is safe, but since it's for testing
+        }
+    });
+    
+    const options = {
+        from: 'server@no-response',
+        to: user.mail,
+        subject: `New user ${user.alias}`,
+        html: `<h1>New User Registered! Welcome ${user.alias}</h1><p> The user ${user.alias} with mail ${user.mail} has registered for our e-commerce, congratulations!</p>`
+    };
+
+    transporter.sendMail(options)
+    .then((info) => {
+        logger.info(`Sent registration email for user ${user.alias}.`);
+        return info
+    })
+    .catch((err) => {
+        logger.error(`Could not send registration email for user ${user.alias} because of ${err.message}`);
+    })
+}
+
 function cartToMailBody(cart, userName){
     return `
     <h2>El usuario ${userName} a comprado:</h2>
@@ -92,4 +119,4 @@ function cartToMsgBody(cart){
     }).join('\n');
 }
 
-export default {sendMail, sendMessage, sendWhatsapp}
+export default {sendMailCart, sendMailUser, sendMessage, sendWhatsapp}

@@ -1,5 +1,6 @@
 import { cartDAO as cart, prodDAO as prod } from "../../utils/DAOSelector.js";
 import { Router } from "express";
+import logger from "../logger.js";
 
 const routerCart = new Router();
 
@@ -21,8 +22,9 @@ routerCart.delete('/:id', (req, res) => {
 
 routerCart.get('/:id/productos', (req, res) => {
     const thisCartId = parseFloat(req.params.id);
-    const thisCart = cart.getById(thisCartId);
-    res.status(200).send(JSON.stringify(thisCart.productos));
+    cart.getById(thisCartId)
+    .then((thisCart) => res.status(200).send(JSON.stringify(thisCart.productos)))
+    .catch((err) => res.status(500).send(JSON.stringify({error: "ID carrito inexistente"})))
 })
 
 routerCart.post('/:id/productos/:id_prod', (req, res) => {
@@ -33,13 +35,28 @@ routerCart.post('/:id/productos/:id_prod', (req, res) => {
     .then((thisCart) => {
         gotCart = true;
         prod.getById(thisProdId)
-        .then((thisProd) => {s
-            thisCart.productos.push(thisProd);
+        .then((thisProd) => {
+            prodInCart = thisCart.productos.findIndex((elem) => elem.id === thisProd.id)
+            if(prodInCart >= 0) {
+                thisCart.productos[prodInCart].number++;
+            } else {
+                thisCart.productos.push({...thisProd, number: 1})
+            }
             cart.change(thisCartId, thisCart)
-            .then((changedCart) => res.status(200).send(JSON.stringify(thisCart)))
+            .then((changedCart) => res.status(200).send(JSON.stringify(changedCart)))
             .catch((e) => res.status(500).send(JSON.stringify({error: "Error al actualizar carrito"})))
         }).catch((e) => res.status(500).send(JSON.stringify({error: "ID producto inexistente"})))
     }).catch((e) => res.status(500).send(JSON.stringify({error: "ID carrito inexistente"})))
+})
+
+routerCart.post('/:id/buy', (req, res) => {
+    const thisCartId = parseFloat(req.params.id);
+    cart.getById(thisCartId)
+    .then((thisCart) => {
+        logger.info('should be sending cart mail now..')
+        res.status(200).redirect('/')
+    })
+    .catch((err) => res.status(500).send(JSON.stringify({error: "ID carrito inexistente"})))
 })
 
 routerCart.delete('/:id/productos/:id_prod', (req, res) => {
