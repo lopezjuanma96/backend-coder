@@ -12,6 +12,10 @@ Las conexiones son: la capa superior accede a las funciones de la capa inferior,
 Podría agregarse al principio la capa de presentación que sería el front-end, se encargaría de mostrar los datos al cliente.
 
 RECORDAR LA S DE PRINCIPIO SOLID: SINGLE RESPONSIBILITY
+*/
 
+/*
+UN PASO MAS: CLEAN ARCHITECHTURE
 
+https://github.com/JaviAPS94/scalio-challenge
 */
