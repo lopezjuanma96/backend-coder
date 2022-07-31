@@ -38,6 +38,7 @@ export default class Contenedor {
             const content = JSON.parse(contentString);
             content[content.findIndex((e) => e.id === id)] = {...val, id:id};
             await fs.promises.writeFile(this.filePath, JSON.stringify(content));
+            return content;
         } catch (error) {
             throw new Error(`Error al intentar crear el nuevo valor:\n${error}`);
         }

@@ -44,6 +44,7 @@ export default class Contenedor {
         const doc = this.query.doc(`${id}`);
         const itemUpdated = await doc.update(...val);
         console.log(`Updated element with ID: ${id} \n`, itemUpdated);
+        return itemUpdated;
     }
 
     async getAll(){

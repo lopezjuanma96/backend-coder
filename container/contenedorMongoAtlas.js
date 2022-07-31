@@ -35,6 +35,7 @@ export default class Contenedor {
     async change(id, val){
         const itemUpdated = await this.model.updateOne({id: id}, {$set: {...val}});
         console.log(`Updated element with ID: ${id} \n`, itemUpdated);
+        return itemUpdated;
     }
 
     async getAll(){

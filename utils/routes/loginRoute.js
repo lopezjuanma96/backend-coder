@@ -1,4 +1,5 @@
 import { Router } from "express";
+import logger from "../logger.js";
 import { createNewUser, loginUser } from "../loginMethods.js";
 
 const routerLogin = new Router();
@@ -39,7 +40,11 @@ routerLogin.get('/register', (req, res) => {
 routerLogin.post('/register', (req, res) => {
     const data = req.body;
     createNewUser(data)
-    .then(() => res.status(200).render('registerSuccess', { userAlias: data.alias }))
+    .then(() => {
+        logger.info(`New User Registered: ${data.alias}`);
+        //sendMailUser(data);
+        res.status(200).render('registerSuccess', { userAlias: data.alias })
+    })
     .catch((e) => res.status(400).render('registerFail', {ERROR:e.message}));
 })
 
