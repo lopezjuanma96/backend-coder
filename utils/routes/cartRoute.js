@@ -5,8 +5,14 @@ import logger from "../logger.js";
 const routerCart = new Router();
 
 routerCart.post('/', (req, res) => {
-    const newId = cart.save({productos: []});  //i dont know why this is returning a promise.
-    res.status(200).send(JSON.stringify({id: newId}));
+    cart.save({productos: []})
+    .then((newId) => {
+        res.status(200).send(JSON.stringify({id: newId}));
+    })
+    .catch((err) => {
+        logger.error(err);
+        res.status(400).send('Unable to create new cart');
+    })
 })
 
 routerCart.delete('/:id', (req, res) => {
@@ -36,17 +42,27 @@ routerCart.post('/:id/productos/:id_prod', (req, res) => {
         gotCart = true;
         prod.getById(thisProdId)
         .then((thisProd) => {
-            prodInCart = thisCart.productos.findIndex((elem) => elem.id === thisProd.id)
+            const prodInCart = thisCart.productos.findIndex((elem) => elem.id === thisProdId && elem.id);
+            console.log(prodInCart)
             if(prodInCart >= 0) {
                 thisCart.productos[prodInCart].number++;
             } else {
-                thisCart.productos.push({...thisProd, number: 1})
+                thisCart.productos.push({...thisProd, number: 1, id: thisProdId})
             }
             cart.change(thisCartId, thisCart)
             .then((changedCart) => res.status(200).send(JSON.stringify(changedCart)))
-            .catch((e) => res.status(500).send(JSON.stringify({error: "Error al actualizar carrito"})))
-        }).catch((e) => res.status(500).send(JSON.stringify({error: "ID producto inexistente"})))
-    }).catch((e) => res.status(500).send(JSON.stringify({error: "ID carrito inexistente"})))
+            .catch((e) => {
+                logger.error(e.message)
+                res.status(500).send(JSON.stringify({error: "Error al actualizar carrito"}))
+            })
+        }).catch((e) => {
+            logger.error(e.message)
+            res.status(500).send(JSON.stringify({error: "ID producto inexistente"}))
+    })
+    }).catch((e) => {
+        logger.error(e.message)
+        res.status(500).send(JSON.stringify({error: "ID carrito inexistente"}))
+    })
 })
 
 routerCart.post('/:id/buy', (req, res) => {
@@ -62,10 +78,10 @@ routerCart.post('/:id/buy', (req, res) => {
 routerCart.delete('/:id/productos/:id_prod', (req, res) => {
     const thisCartId = parseFloat(req.params.id);
     const thisProdId = parseFloat(req.params.id_prod);
-    try{
-        const thisCart = cart.getById(thisCartId);
-        try {
-            const thisProd = prod.getById(thisProdId);
+    cart.getById(thisCartId)
+    .then((thisCart) => {
+        prod.getById(thisProdId)
+        .then((thisProd) => {
             if (thisCart.productos.find((e) => e.id === thisProdId)){
                 thisCart.productos = thisCart.productos.filter((e) => e.id !== thisProdId);
                 cart.change(thisCartId, thisCart);
@@ -73,12 +89,17 @@ routerCart.delete('/:id/productos/:id_prod', (req, res) => {
             } else {
                 res.status(200).send("There's no product of that ID in the requested Cart\n" + JSON.stringify(thisCart))
             }
-        } catch (e) {
+        })
+        .catch((err) => {
+            logger.error(err.message);
             res.status(500).send(JSON.stringify({error: "ID producto inexistente"}));
-        }
-    } catch (e) {
+        })
+    })
+    .catch((err) => {
+        logger.error(err.message);
         res.status(500).send(JSON.stringify({error: "ID carrito inexistente"}));
-    }
+    })
+        
 })
 
 export default routerCart
