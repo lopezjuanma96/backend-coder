@@ -1,7 +1,7 @@
 import express from 'express';
 //import handlebars from "express-handlebars"; //airbnb codestyle uses ' instead of " 
 import handlebars from 'express-handlebars';
-import route from './routes/personRoutes.js'
+import route from './routes/route.js'
 
 const { engine } = handlebars;
 
