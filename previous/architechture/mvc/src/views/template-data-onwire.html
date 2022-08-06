@@ -67,12 +67,12 @@
             inputs.forEach(input => input.value = '')
         }
 const getPlantilla = () => `
-            {{#if personas.length}} 
+            {{#if meal.length}} 
                 <div class="table-responsive">
                     <table class="table table-dark">
                         <tr> <th>Nombre</th> <th>Apellido</th> <th>DNI</th></tr>
-                        {{#each personas}}
-                            <tr> <td>{{this.nombre}}</td> <td>{{this.apellido}}</td> <td>{{this.dni}}</td> </tr>
+                        {{#each meal}}
+                            <tr> <td>{{this.nombre}}</td> <td>{{this.apellido}}</td> <td>{{this.comida}}</td> </tr>
                         {{/each}}
                     </table>
                 </div>

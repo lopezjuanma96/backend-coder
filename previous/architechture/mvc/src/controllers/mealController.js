@@ -1,7 +1,7 @@
 import path from 'path';
 import { getAll, save } from '../models/mealModels.js';
 
-const __dirname = path.dirname;
+const __dirname = path.resolve();
 
 async function postMealController(req, res, next){
     const meal = await save(req.body);
@@ -14,7 +14,7 @@ async function getMealController(req, res, next) {
 
 async function getMealJSONController(req, res, next) {
     const meals = await getAll();
-    res.json(meals);
+    res.json({meals});
 }
 
 export { postMealController, getMealController, getMealJSONController };
