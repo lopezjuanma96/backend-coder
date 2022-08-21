@@ -1,0 +1,27 @@
+mutation{
+  createPersona(data: {name: "Pedro", age: 26}){
+    name
+  	age
+  }
+}
+
+mutation{
+  createPersona(data: {name: "Juan", age: 25}){
+    name
+  	age
+  }
+}
+
+query{
+  getPersonas(field: "name", value: "Pedro"){
+    name
+    age
+  }
+}
+
+query{
+  getPersonas{
+    id
+    name
+  }
+}
